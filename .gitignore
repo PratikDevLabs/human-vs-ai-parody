@@ -147,3 +147,7 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Generated voice clips (see tools/VOICE_GENERATION.md) — not committed
+assets/audio/voice/*.mp3
+assets/audio/voice/manifest.json
