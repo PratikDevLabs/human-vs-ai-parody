@@ -1,72 +1,102 @@
-# HUMAN vs AI — Overlord Arena
+# HUMAN vs AI — Overlord Arena | Neo-Delhi 2099
 
-**1 Human. 3 AI Overlords. Ek Gujarati Chai. ☕**
+**1 Human. 3 AI Overlords. One Gujarati Chai.**
 
-A neon-cyberpunk 2.5D arcade brawler where you fight **Grok** (psycho roaster), **ChatGPT** (essay bomber) and **Claude** (code-matrix) — all at once. They talk. They roast. Their words literally drain your HP. Your only Brahmastra? A steaming cup of **Gujarati Chai**.
+A neon-cyberpunk **2.5D arcade brawler** (Three.js, self-hosted) where you fight **Grok** (roast slinger), **ChatGPT** (essay bomber) and **Claude** (code matrix) — all at once. They talk, they roast, their words drain your HP. Your Brahmastra? A steaming cup of **Gujarati Chai**.
 
->  Follow the dev: **[@pratik_roy_820](https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==)** — *भड़ास निकालो - Instagram पर फॉलो करो!*
+> Follow the dev: **[@pratik_roy_820](https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==)**
 
-## ▶ Play instantly
+## Play instantly
 
-No build. No dependencies. No paid APIs. Just open the file:
+Static site, **no build step** — deploy as-is on Vercel/Netlify/GitHub Pages, or run locally:
 
 ```bash
-# Option A: double-click index.html in any modern browser
-
-# Option B: serve locally
 python3 -m http.server 8000
-# → http://localhost:8000
+# → http://localhost:8000   (any static server works; ES modules need http, not file://)
 ```
 
-Works on desktop + mobile touchscreens.  **Sound ON recommended** — the AIs roast you with real voices (Web Speech API).
+PWA: installable, works offline after first load, OG image + manifest included.
+Works on desktop keyboard + mobile multitouch (dynamic joystick, 56px+ buttons, portrait or landscape).
 
-##  Controls
+## Controls
 
 | Action | Desktop | Mobile |
 |---|---|---|
-| Move | `A`/`D` or `◀`/`▶` | Virtual joystick |
-| Jump | `Space` / `W` / `▲` | `JUMP` button or flick joystick up |
-| Punch | `J` |  PUNCH |
-| Kick | `K` |  KICK |
-| Dodge (i-frames) | `Shift` / `L` |  DODGE |
-| **Gujarati Chai Ult** | `F` (at 100%) | ☕ fiery CHAI button |
-| Pause / Mute | `P` / `Esc` · `M` | HUD buttons |
+| Move | `A`/`D` or arrows | left-side dynamic joystick |
+| Jump | `Space` / `W` / up | JUMP button or flick stick up |
+| Punch | `J` / `Z` | PUNCH |
+| Kick | `X` / `K` | KICK |
+| Dodge (i-frames; perfect = slow-mo + chai) | `S` / `L` / down | DODGE |
+| **Chai Brahmastra** (at 100% chai) | `C` / `V` / `Q` | teacup ULT button |
+| Pause | `P` / `Esc` (tap pause screen to resume) | pause button |
+| Fullscreen | `F` | fullscreen button |
 
-##  Combat design
+## Combat design
 
-- **No button-mashing:** real hitboxes, attack cooldowns and a stamina system — fighters **physically lunge toward each other and collide** (body pushback), punches/kicks land only on **direct body contact** with impact sparks, and floating `-25 HP` damage numbers pop on every hit. Punch = fast, single-target. Kick = slow, sweeps the whole arc, and **interrupts AI casts**.
-- **Cinematic ultimates with letterbox slow-mo (every difficulty):**
-  - ☕ **You — Gujarati Chai Brahmastra:** the human literally **lifts off the ground** with glowing particles, **levitates mid-air sipping a steaming cup of chai**, then unleashes an **earth-shattering shockwave that hits all 3 AIs simultaneously** (screen shake, ground cracks, they get launched).
-  -  **Grok — Psychological Roast Wave:** expanding rings of toxic roast glyphs, red screen tint, HP **and** stamina + mind damage — with live voice roasts (*"Bhai main toh nahi sehta!"*, *"Khel khatam beta, ab ghar ja!"*)
-  -  **ChatGPT — Massive 10-Page Essay Block:** one giant telegraphed essay block ("YOU LOSE" stamp) crashes down with debris and a huge shockwave (*"Beta, tumse na ho payega, logic padh lo pehle."*)
-  -  **Claude — Matrix Laser Stream:** a screen-shaking, jagged laser beam fired from his visor straight into you with matrix-glyph rain and tick damage (*"Oops! Syntax error in your life choices."*)
-- **Smart AI brains:** surround slotting, melee-attack tokens (no cheap 3-on-1 stunlocks), reactive dodges, blocking, cast interruptions, low-HP retreats.
-- **☕ Gujarati Chai Brahmastra:** charges as you deal/take damage. At 100% the button burns — unleash a full-screen cinematic blast that heals you, refills stamina and smashes all three overlords at once.
-- **Difficulties:**  Easy (slower AI, fast chai) ·  Medium (the real fight) ·  Hard (simultaneous powers, homing code, brutal damage).
+- Real limb hitboxes on body overlap, pushboxes, stamina, 100 ms input buffer, combo scaling, hit-stop (60–160 ms) + screen shake on heavy hits.
+- **Telegraphs everywhere:** ground decal + move-name banner + wind-up ring on the attacker card + off-screen edge arrows — every attack is dodgeable or jumpable.
+- **Perfect dodge** (dodge within 120 ms of a hit): 0.3 s slow-mo, stamina + chai refund.
+- 3:00 timer; time-up compares HP %. Best score + W/L saved in `localStorage`.
+- **Cinematic ultimates** (letterbox, slow-mo, camera push):
+  - **You — Gujarati Chai Brahmastra:** levitate, golden spiral, sip from a real teacup, then a golden shockwave torus that knocks **all 3 AIs**, cracks the ground, spikes bloom/CA, heals you, resets the meter.
+  - **Grok — ROAST WAVE:** expanding ground rings (jump/dodge), HP + stamina + "mind" drain, glitch shards, no control reversal.
+  - **ChatGPT — ESSAY DROP:** giant scrolling-text slab with a 1 s ground shadow telegraph, crushing impact, rubble slow zone.
+  - **Claude — CODE MATRIX / COMPILE & EXECUTE:** ascends with 3 counter-rotating holo code rings, red lane telegraph "EXECUTING…", limited-turn-rate code laser (Hard: 3 sub-beams), DoT + `TypeError: human is not defined` glitch, then an overheat "COMPILATION FAILED" bonus-damage window; Med/Hard add a homing code-barrage ({}/NaN/404 panels you can punch for chai).
+- AI FSM with attack tokens per difficulty (Easy 1 / Med 2 / Hard 3 simultaneous attackers), ults never overlap.
 
-##  Voice acting (zero audio files)
+## Tech
 
-Everything is synthesized live in the browser:
+- **Modular static site:** `index.html` + `src/` ES modules + `assets/` (self-hosted Three.js r170 pinned via importmap, fonts, icons, vendor addons). No bundler, no CDN at runtime.
+- **Renderer:** 2.5D side-view lane camera that auto-frames all fighters; ACES tone mapping + UnrealBloom + custom vignette/grain/chromatic-aberration/heat-distortion shader pass; auto LOW/MED/HIGH quality (rolling FPS monitor, DPR steps 2→1.5→1, bloom off on LOW); fixed 60 Hz sim decoupled from render; pooled/instanced particles; < 150 draw calls; `?debug=1` overlay; Canvas2D fallback if WebGL is missing; global errors → toast, never a crash.
+- **Art:** "Neo-Delhi 2099" — 5 parallax layers (moon/smog/lightning sky, skyline with shikhara/domes/minarets, mid-city holo billboards in Devanagari, chai tapri with neon "चाय" sign + auto-rickshaw + steam, foreground fog/embers) over a wet neon-grid floor with per-fighter light pools. Procedural articulated PBR fighter rigs with distinct silhouettes and full animation sets (idle/walk/attack anticipation/punch/kick/dodge/hurt/stun/cast/ult/KO).
+- **Audio:** one WebAudio graph (Master → Music/SFX/Voice, limiter, convolver reverb, ducking under voice/ults), lazy after first gesture; layered synth SFX; dark synthwave sequencer. Voices: priority 1 = pre-rendered clips `assets/audio/voice/{char}_{event}_{n}.mp3` (HP 70 Hz → low-shelf +4 dB@180 → compressor → reverb; see `tools/VOICE_GENERATION.md` + `tools/voice_lines.csv`, edge-tts hi-IN), priority 2 = `speechSynthesis` with scored voice selection (hi-IN > en-IN > male en; pitch 0.80–0.95, rate 0.88–0.95), cancel-before-speak, one voice at a time, ults interrupt, subtitles for every line.
+- **All strings** (dialogue + UI, Hinglish/English/Hindi) live in `src/data/dialogue.js`, keyed `character → event → variants`; all tuning in `src/config.js`. Zero emoji / zero unicode-glyph icons — one inline SVG sprite. Original abstract emblems only; no brand logos.
+- **Mobile hygiene:** viewport-fit cover + safe areas, `touch-action: none`, no pull-to-refresh / double-tap zoom / long-press, fullscreen button, screen wake lock during fights, `navigator.vibrate` on hits, `prefers-reduced-motion` respected, colour-blind-safe palette toggle.
+- Tested viewports: 360×640, 412×915, 768×1024, 1280×720, 1920×1080.
 
-The engine explicitly **locks onto a deep, heavy male Hindi / Indian-English voice** (`hi-IN` → `en-IN` → any male-branded voice → deep-pitched fallback, pitch ≤ 0.55) so it never sounds like the robotic female default. All roasts are aggressive Hinglish:
+## Repo layout
 
-| Character | Voice profile |
-|---|---|
-| Grok | `hi-IN`, pitch `0.55` — *"Bhai main toh nahi sehta!"* / *"Khel khatam beta, ab ghar ja!"* |
-| ChatGPT | `hi-IN`, pitch `0.65` — *"Beta, tumse na ho payega, logic padh lo pehle."* |
-| Claude | `hi-IN`, pitch `0.75` — *"Oops! Syntax error in your life choices."* |
-| You | `hi-IN`, pitch `0.85` — chai-powered one-liners |
+```
+index.html            shell + importmap + screen DOM
+manifest.json  sw.js  favicon.svg
+assets/css/style.css  design system + @font-face (self-hosted woff2)
+assets/vendor/three/  pinned three.module.js r170 + postprocessing addons
+assets/icons|og/      PWA icons + OG image (generated)
+assets/audio/voice/   generated clips (git-ignored) + manifest.json
+src/config.js         every tunable (fighters, combat, ults, AI, quality)
+src/data/dialogue.js  all text: DIALOGUE + UI{en,hinglish,hi} + voiceLineRows()
+src/core/             bus, errors(toast), storage, i18n, quality manager
+src/game/             sim (pure, fixed-step), ai FSM, ults — headless-testable
+src/render/           renderer3d (post chain), arena, rigs, fx3d, canvas2d fallback
+src/ui/               hud, controls, screens, tutorial, icons (SVG sprite)
+src/audio/            audio graph + SFX synth + music, voice director
+tools/                VOICE_GENERATION.md + voice_lines.csv
+```
 
-SFX (punches, explosions, the chai blast) and the synthwave loop are generated with the Web Audio API. Speech bubbles + floating `-15 HP: Grok Roasted You!` glass toasts keep every hit readable.
+## Dev
 
-##  The viral loop
+```bash
+# syntax-check every module
+for f in $(find src -name '*.js') sw.js; do node --input-type=module --check < "$f"; done
 
-Every match ends on a neon meme scorecard — grade (S→D), damage, max combo, accuracy, chai ults, roasts survived — with one-tap **Share** and the big glowing Instagram CTA. Screenshot it. Flex it. Challenge your friends.
+# headless sim test (pure modules, no DOM)
+node --input-type=module -e "
+import { sim, resetMatch, stepSim, setAxis, press, livingAIs } from './src/game/sim.js';
+import { updateAI } from './src/game/ai.js';
+import { SIM_DT } from './src/config.js';
+resetMatch('hard'); sim.state = 'countdown';
+let n = 0;
+while (sim.state !== 'result' && n++ < 60*60*5) {
+  if (sim.state === 'fight') {
+    const t = livingAIs()[0]; if (t) { setAxis(Math.sign(t.x - sim.player.x)); press('punch'); }
+    for (const f of sim.fighters) if (!f.isPlayer && f.alive) updateAI(sim, f, SIM_DT);
+  }
+  stepSim(SIM_DT);
+}
+console.log('result:', sim.result, sim.stats);
+"
+```
 
-##  Tech
+## License
 
-Single self-contained `index.html` (HTML5 Canvas 2.5D parallax renderer + glassmorphism HUD + vanilla ES6 engine). Procedurally animated fighters, particles, hitstop, screen-shake, slow-mo K.O.s — no frameworks, no trackers, runs offline.
-
-##  License
-
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). Fan parody; no brand assets used.
