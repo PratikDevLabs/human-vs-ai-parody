@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>HUMAN vs AI — Overlord Arena 🥊☕</title>
+<title>HUMAN vs AI — Overlord Arena</title>
 <meta name="description" content="1 Human vs 3 AI Overlords — Grok, ChatGPT aur Claude. Cinematic fights, Gujarati Chai Brahmastra, aur live Hinglish roasts!">
 <meta name="theme-color" content="#070812">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☕</text></svg>">
@@ -311,6 +311,18 @@ kbd{background:#171b3d;border:1px solid var(--stroke);border-bottom-width:2.5px;
   .panel{padding:14px}
 }
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s !important}}
+
+/* ---------- sleek icon system (zero emojis) ---------- */
+.icSvg{display:block;width:14px;height:14px;color:#c7d2fe}
+.abtn .ic{display:grid;place-items:center}
+.abtn .ic svg{width:22px;height:22px;color:#e6ecff;filter:drop-shadow(0 0 6px rgba(165,180,252,.6))}
+#joyKnob{place-items:center}
+#joyKnob .knobDot{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.92);box-shadow:0 0 12px #7dd3fc}
+.ava{font-family:'Orbitron';font-weight:900;font-size:13px;color:#e6ecff}
+.fighter .big{font-family:'Orbitron';font-weight:900}
+.panel{border:1px solid rgba(255,255,255,.12)}
+.secT{color:#8f97c0}
+
 </style>
 </head>
 <body>
@@ -325,50 +337,50 @@ kbd{background:#171b3d;border:1px solid var(--stroke);border-bottom-width:2.5px;
   <!-- ===== HUD ===== -->
   <div id="hud" style="display:none">
     <div class="card glass" id="playerCard">
-      <div class="who"><div class="ava you">🧑‍🚀</div>
+      <div class="who"><div class="ava you">◆</div>
         <div style="min-width:0"><div class="name" style="color:var(--you)">YOU · HUMAN</div><div class="tag">Chai-Powered Underdog</div></div>
         <div class="statusDot"><span id="pStatusTxt">READY</span><span class="dot" id="pDot"></span></div>
       </div>
       <div class="bar hp" id="pHpBar"><i id="pHp"></i></div>
       <div class="bar st"><i id="pSt"></i></div>
       <div class="bar chai"><i id="pChaiBar"></i></div>
-      <div class="barRow"><span>❤️ HP <b id="pHpNum" style="color:#fff">220</b></span><span>⚡ STAMINA</span><span>☕ CHAI <b id="pChaiNum" style="color:#fdba74">0%</b></span></div>
+      <div class="barRow"><span>HP <b id="pHpNum" style="color:#fff">220</b></span><span>STAMINA</span><span>☕ CHAI <b id="pChaiNum" style="color:#fdba74">0%</b></span></div>
     </div>
 
     <div class="card glass aiCard" id="card-Grok">
-      <div class="who"><div class="ava Grok">😈</div>
+      <div class="who"><div class="ava Grok">✕</div>
         <div style="min-width:0"><div class="name" style="color:var(--Grok)">Grok</div><div class="tag">Psycho Roaster</div></div>
         <div class="statusDot"><span id="st-Grok">IDLE</span><span class="dot" id="dot-Grok"></span></div>
       </div>
       <div class="bar hp" id="bar-Grok"><i id="hp-Grok"></i></div>
-      <div class="barRow"><span>😈 ROAST WAVE · MIND DMG</span><span><b id="num-Grok" style="color:#fff"></b></span></div>
+      <div class="barRow"><span>ROAST WAVE · MIND DMG</span><span><b id="num-Grok" style="color:#fff"></b></span></div>
     </div>
 
     <div class="card glass aiCard" id="card-gpt">
-      <div class="who"><div class="ava gpt">🤖</div>
+      <div class="who"><div class="ava gpt">◉</div>
         <div style="min-width:0"><div class="name" style="color:var(--gpt)">ChatGPT</div><div class="tag">Essay Bomber</div></div>
         <div class="statusDot"><span id="st-gpt">IDLE</span><span class="dot" id="dot-gpt"></span></div>
       </div>
       <div class="bar hp" id="bar-gpt"><i id="hp-gpt"></i></div>
-      <div class="barRow"><span>📄 MASSIVE ESSAY BLOCK</span><span><b id="num-gpt" style="color:#fff"></b></span></div>
+      <div class="barRow"><span>MASSIVE ESSAY BLOCK</span><span><b id="num-gpt" style="color:#fff"></b></span></div>
     </div>
 
     <div class="card glass aiCard" id="card-Claude">
-      <div class="who"><div class="ava Claude">🧠</div>
+      <div class="who"><div class="ava Claude">◈</div>
         <div style="min-width:0"><div class="name" style="color:var(--Claude)">Claude</div><div class="tag">Code Matrix</div></div>
         <div class="statusDot"><span id="st-Claude">IDLE</span><span class="dot" id="dot-Claude"></span></div>
       </div>
       <div class="bar hp" id="bar-Claude"><i id="hp-Claude"></i></div>
-      <div class="barRow"><span>🧠 MATRIX LASER STREAM</span><span><b id="num-Claude" style="color:#fff"></b></span></div>
+      <div class="barRow"><span>MATRIX LASER STREAM</span><span><b id="num-Claude" style="color:#fff"></b></span></div>
     </div>
 
     <div class="card glass" id="metaCard">
       <div id="timer">3:00</div><div id="diffBadge">MEDIUM</div>
       <div class="iconRow">
-        <button class="iconBtn" id="btnSound" title="Voice + SFX (M)">🔊</button>
-        <button class="iconBtn" id="btnMusic" title="Music">🎵</button>
-        <button class="iconBtn" id="btnPause" title="Pause (P)">⏸️</button>
-        <button class="iconBtn" id="btnFull" title="Fullscreen">⛶</button>
+        <button class="iconBtn" id="btnSound" title="Voice + SFX (M)"><svg class="icSvg" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <button class="iconBtn" id="btnMusic" title="Music"><svg class="icSvg" viewBox="0 0 24 24"><path d="M9 18a3 3 0 11-2-2.83V6l11-2.2V15a3 3 0 11-2-2.83V7L9 8.9V18z" fill="currentColor"/></svg></button>
+        <button class="iconBtn" id="btnPause" title="Pause (P)"><svg class="icSvg" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg></button>
+        <button class="iconBtn" id="btnFull" title="Fullscreen"><svg class="icSvg" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </div>
   </div>
@@ -379,17 +391,17 @@ kbd{background:#171b3d;border:1px solid var(--stroke);border-bottom-width:2.5px;
 
   <!-- ===== Controls deck ===== -->
   <div id="deck" style="display:none">
-    <div id="joyZone"><div id="joyBase"></div><div id="joyKnob">🕹️</div><div class="lbl">MOVE · ↑ FLICK = JUMP</div></div>
+    <div id="joyZone"><div id="joyBase"></div><div id="joyKnob"><span class="knobDot"></span></div><div class="lbl">MOVE · ↑ FLICK = JUMP</div></div>
     <div id="btns">
       <div id="chaiWrap">
         <button id="bChai"><span class="key">F</span><span class="core"><span class="ic">☕</span><span class="tx">GUJARATI<br>CHAI</span></span></button>
         <div id="chaiPct">CHARGING 0%</div>
       </div>
       <div class="grid">
-        <button class="abtn" id="bPunch"><span class="key">J</span><span class="ic">👊</span><span class="tx">PUNCH</span></button>
-        <button class="abtn" id="bKick"><span class="key">K</span><span class="ic">🦵</span><span class="tx">KICK</span></button>
-        <button class="abtn" id="bDodge"><span class="key">⇧/L</span><span class="ic">💨</span><span class="tx">DODGE</span></button>
-        <button class="abtn" id="bJumpB"><span class="key">␣</span><span class="ic">⬆️</span><span class="tx">JUMP</span></button>
+        <button class="abtn" id="bPunch"><span class="key">J</span><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span><span class="tx">PUNCH</span></button>
+        <button class="abtn" id="bKick"><span class="key">K</span><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 20L16 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><circle cx="17.5" cy="4.5" r="2.6" fill="currentColor"/></svg></span><span class="tx">KICK</span></button>
+        <button class="abtn" id="bDodge"><span class="key">⇧/L</span><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 5l7 7-7 7M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tx">DODGE</span></button>
+        <button class="abtn" id="bJumpB"><span class="key">␣</span><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 20V5M5.5 11.5L12 5l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="tx">JUMP</span></button>
       </div>
     </div>
   </div>
@@ -397,63 +409,63 @@ kbd{background:#171b3d;border:1px solid var(--stroke);border-bottom-width:2.5px;
   <!-- ===== MENU ===== -->
   <div class="screen" id="menuScreen">
     <div class="panel glass">
-      <div class="logo"><div class="pre">⚡ OVERLORD ARENA ⚡</div></div>
+      <div class="logo"><div class="pre">// OVERLORD ARENA //</div></div>
       <h1 class="title"><span class="h">HUMAN</span><span class="vs">VS</span><span class="a">AI</span></h1>
       <p class="tagline">Teen AI Overlords ne arena capture kar liya hai — <b>Grok roast karega, ChatGPT essay girayega, Claude laser barsaega.</b><br>
       Tumhare paas hai sirf do haath… aur ek <b>☕ Gujarati Chai Brahmastra</b> jo tumhe hawa mein utha ke sab ko jala dega!</p>
 
       <div class="secT">THE FIGHTERS</div>
       <div class="roster">
-        <div class="fighter you"><div class="big">🧑‍🚀</div><h3 style="color:var(--you)">YOU · HUMAN</h3><div class="role" style="color:#7dd3fc">THE UNDERDOG</div>
-          <p>Fast fists, heavy kicks, slick dodges — aur ek cinematic chai ult. Damage do ya lo, Chai meter bharta rahega.</p><span class="pow">☕ ULT: GUJARATI CHAI BRAHMASTRA — levitate, sip, SHOCKWAVE!</span></div>
-        <div class="fighter Grok"><div class="big">😈</div><h3 style="color:var(--Grok)">Grok</h3><div class="role" style="color:#fca5a5">PSYCHO ROASTER</div>
-          <p>Desi roasts itne toxic ki HP + Stamina dono drain. <i>"Bhai main toh nahi sehta!"</i></p><span class="pow">😈 ULT: PSYCHOLOGICAL ROAST WAVE</span></div>
-        <div class="fighter gpt"><div class="big">🤖</div><h3 style="color:var(--gpt)">ChatGPT</h3><div class="role" style="color:#6ee7b7">ESSAY BOMBER</div>
-          <p>Aasmaan se ekdum MASSIVE 10-page essay block girayega. <i>"Beta, tumse na ho payega!"</i></p><span class="pow">📄 ULT: MASSIVE ESSAY BLOCK DROP</span></div>
-        <div class="fighter Claude"><div class="big">🧠</div><h3 style="color:var(--Claude)">Claude</h3><div class="role" style="color:#fdba74">CODE MATRIX</div>
-          <p>Polite tone, lethal matrix laser stream — aankhein se seedha beam. <i>"Oops! Syntax error in your life choices."</i></p><span class="pow">🧠 ULT: MATRIX LASER STREAM</span></div>
+        <div class="fighter you"><div class="big">◆</div><h3 style="color:var(--you)">YOU · HUMAN</h3><div class="role" style="color:#7dd3fc">THE UNDERDOG</div>
+          <p>Fast fists, heavy kicks, slick dodges — aur ek cinematic chai ult. Damage do ya lo, Chai meter bharta rahega.</p><span class="pow">☕ ULT: GUJARATI CHAI BRAHMASTRA — levitate · sip · shockwave</span></div>
+        <div class="fighter Grok"><div class="big">✕</div><h3 style="color:var(--Grok)">Grok</h3><div class="role" style="color:#fca5a5">PSYCHO ROASTER</div>
+          <p>Desi roasts itne toxic ki HP + Stamina dono drain. <i>"Bhai, main toh nahi sehta itni beizzati!"</i></p><span class="pow">✕ ULT: PSYCHOLOGICAL ROAST WAVE</span></div>
+        <div class="fighter gpt"><div class="big">◉</div><h3 style="color:var(--gpt)">ChatGPT</h3><div class="role" style="color:#6ee7b7">ESSAY BOMBER</div>
+          <p>Aasmaan se ekdum MASSIVE 10-page essay block girayega. <i>"Yeh lo mera lamba-chauda lecture!"</i></p><span class="pow">◉ ULT: MASSIVE ESSAY BLOCK DROP</span></div>
+        <div class="fighter Claude"><div class="big">◈</div><h3 style="color:var(--Claude)">Claude</h3><div class="role" style="color:#fdba74">CODE MATRIX</div>
+          <p>Silent striker — aankhein se seedha matrix laser beam. <i>"Yeh le seedha direct attack!"</i></p><span class="pow">◈ ULT: MATRIX LASER STREAM</span></div>
       </div>
 
       <div class="secT">SELECT DIFFICULTY</div>
       <div class="diffs" id="diffRow">
-        <button class="diff" data-d="easy"><h3>🌱 EASY</h3><p>AI powers ON but slow. Tumhara damage zyada, Chai super-fast charge. Warm-up mode.</p></button>
-        <button class="diff sel" data-d="medium"><span class="rec">RECOMMENDED</span><h3>⚔️ MEDIUM</h3><p>Asli fight. AI chains attacks, do powers ek saath chal sakte hain. Dodge seekh lo!</p></button>
-        <button class="diff" data-d="hard"><h3>💀 HARD</h3><p>Overlord mode. Teeno ek saath baraste hain, damage brutal. Sirf legends ke liye.</p></button>
+        <button class="diff" data-d="easy"><h3>EASY</h3><p>AI powers ON but slow. Tumhara damage zyada, Chai super-fast charge. Warm-up mode.</p></button>
+        <button class="diff sel" data-d="medium"><span class="rec">RECOMMENDED</span><h3>MEDIUM</h3><p>Asli fight. AI chains attacks, do powers ek saath chal sakte hain. Dodge seekh lo!</p></button>
+        <button class="diff" data-d="hard"><h3>HARD</h3><p>Overlord mode. Teeno ek saath baraste hain, damage brutal. Sirf legends ke liye.</p></button>
       </div>
 
       <div class="secT">HOW TO PLAY</div>
       <div class="how">
-        <div class="howBox"><b>⌨️ Desktop:</b> <kbd>A</kbd><kbd>D</kbd>/<kbd>◀</kbd><kbd>▶</kbd> move · <kbd>Space</kbd>/<kbd>W</kbd> jump · <kbd>J</kbd> punch · <kbd>K</kbd> kick · <kbd>Shift</kbd>/<kbd>L</kbd> dodge · <kbd>F</kbd> Chai Ult · <kbd>P</kbd> pause · <kbd>M</kbd> mute</div>
-        <div class="howBox"><b>📱 Mobile:</b> Left <b>joystick</b> se move (upar flick = jump), right buttons se <b>Punch / Kick / Dodge / Jump</b>. Chai button 100% pe jalne lage toh dabaa do! 🔥</div>
+        <div class="howBox"><b>Desktop:</b> <kbd>A</kbd><kbd>D</kbd>/<kbd>◀</kbd><kbd>▶</kbd> move · <kbd>Space</kbd>/<kbd>W</kbd> jump · <kbd>J</kbd> punch · <kbd>K</kbd> kick · <kbd>Shift</kbd>/<kbd>L</kbd> dodge · <kbd>F</kbd> Chai Ult · <kbd>P</kbd> pause · <kbd>M</kbd> mute</div>
+        <div class="howBox"><b>Mobile:</b> left <b>joystick</b> se move karo (upar flick = jump), right side ke bade buttons se <b>Punch / Kick / Dodge / Jump</b>. Chai button 100% pe jalne lage toh dabaa do!</div>
       </div>
-      <div class="howBox" style="margin-top:10px">🎯 <b>Pro tips:</b> Button mash karne se kuch nahi hoga — <b>characters ko sach mein approach karna padta hai</b>, punches/kicks body contact pe hi lagte hain. AI cast kar raha ho toh <b>Kick se interrupt</b> karo. Dodge mein <b>i-frames</b> milte hain. ☕ Chai ult ek <b>full cinematic</b> hai — levitate, sip, aur ek shockwave mein teeno ko ek saath uda do! 🔊 Sound ON rakho — AI sach mein <b>deep desi male voice mein bol ke roast</b> karega!</div>
+      <div class="howBox" style="margin-top:10px"><b>Pro tips:</b> button mash karne se kuch nahi hoga — fighters ko <b>sach mein paas jaana padta hai</b>, punch/kick sirf body contact pe lagte hain. AI power charge kar raha ho toh <b>kick se rok do</b>. Dodge karne se thodi der bach jaate ho. ☕ Chai ult ek <b>full cinematic</b> hai — hawa mein uthoge, chai pioge, aur ek shockwave mein teeno ko ek saath uda doge. Sound ON rakho — AI sach mein <b>deep desi male voice mein bol ke roast</b> karega!</div>
 
       <div class="ctaRow">
-        <button class="btn primary" id="btnStart">🥊 START FIGHT</button>
+        <button class="btn primary" id="btnStart">START FIGHT</button>
         <div class="toggleRow" style="margin-top:0">
-          <button class="tgl" id="menuSound">🔊 Voice + SFX: ON</button>
-          <button class="tgl" id="menuMusic">🎵 Music: ON</button>
+          <button class="tgl" id="menuSound">Voice + SFX: ON</button>
+          <button class="tgl" id="menuMusic">Music: ON</button>
         </div>
       </div>
-      <p class="credit">Made with ☕ &amp; attitude · Follow the dev 👉 <a href="https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==" target="_blank" rel="noopener">@pratik_roy_820</a> on Instagram</p>
+      <p class="credit">Made with ☕ &amp; attitude · Follow the dev — <a href="https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==" target="_blank" rel="noopener">@pratik_roy_820</a> on Instagram</p>
       <p class="credit" id="bestLine" style="margin-top:5px;color:#fde68a"></p>
-      <p id="soundNote">🔊 Best experience: sound ON, deep male hi-IN voice lock kiya gaya hai — Grok, ChatGPT &amp; Claude live Hinglish mein roast karenge (Web Speech API).</p>
+      <p id="soundNote">Best experience: sound ON. The voice engine locks a deep male Hindi (hi-IN) voice — Grok, ChatGPT &amp; Claude roast you out loud in Hinglish.</p>
     </div>
   </div>
 
   <!-- ===== PAUSE ===== -->
   <div class="screen hidden" id="pauseScreen">
     <div class="panel glass" id="pausePanel">
-      <h2>⏸️ PAUSED</h2>
+      <h2>PAUSED</h2>
       <p style="color:var(--dim);font-weight:600">Chai thandi ho rahi hai… jaldi wapas aao! ☕</p>
       <div class="col">
-        <button class="btn primary" id="btnResume">▶️ RESUME</button>
-        <button class="btn ghost" id="btnRestart">🔄 RESTART MATCH</button>
-        <button class="btn ghost" id="btnQuit">🏠 MAIN MENU</button>
+        <button class="btn primary" id="btnResume">RESUME</button>
+        <button class="btn ghost" id="btnRestart">RESTART MATCH</button>
+        <button class="btn ghost" id="btnQuit">MAIN MENU</button>
       </div>
       <div class="toggleRow">
-        <button class="tgl" id="pauseSound">🔊 Voice + SFX: ON</button>
-        <button class="tgl" id="pauseMusic">🎵 Music: ON</button>
+        <button class="tgl" id="pauseSound">Voice + SFX: ON</button>
+        <button class="tgl" id="pauseMusic">Music: ON</button>
       </div>
     </div>
   </div>
@@ -468,24 +480,24 @@ kbd{background:#171b3d;border:1px solid var(--stroke);border-bottom-width:2.5px;
       </div>
       <div id="koList"></div>
       <div class="stats">
-        <div class="stat"><b id="sTime">0:00</b><span>⏱️ TIME</span></div>
-        <div class="stat"><b id="sDealt">0</b><span>💥 DAMAGE DEALT</span></div>
-        <div class="stat"><b id="sTaken">0</b><span>🩸 DAMAGE TAKEN</span></div>
-        <div class="stat"><b id="sCombo">0</b><span>🔥 MAX COMBO</span></div>
-        <div class="stat"><b id="sHits">0</b><span>🎯 HITS LANDED</span></div>
-        <div class="stat"><b id="sAcc">0%</b><span>📍 ACCURACY</span></div>
-        <div class="stat"><b id="sChai">0</b><span>☕ CHAI ULTS</span></div>
-        <div class="stat"><b id="sRoasts">0</b><span>😈 ROASTS SURVIVED</span></div>
+        <div class="stat"><b id="sTime">0:00</b><span>TIME</span></div>
+        <div class="stat"><b id="sDealt">0</b><span>DAMAGE DEALT</span></div>
+        <div class="stat"><b id="sTaken">0</b><span>DAMAGE TAKEN</span></div>
+        <div class="stat"><b id="sCombo">0</b><span>MAX COMBO</span></div>
+        <div class="stat"><b id="sHits">0</b><span>HITS LANDED</span></div>
+        <div class="stat"><b id="sAcc">0%</b><span>ACCURACY</span></div>
+        <div class="stat"><b id="sChai">0</b><span>CHAI ULTS</span></div>
+        <div class="stat"><b id="sRoasts">0</b><span>ROASTS SURVIVED</span></div>
       </div>
       <div class="endBtns">
-        <button class="btn primary" id="btnAgain">🔄 PLAY AGAIN</button>
-        <button class="btn ghost" id="btnMenu2">🎚️ CHANGE DIFFICULTY</button>
-        <button class="btn ghost" id="btnShare">📤 SHARE SCORE</button>
+        <button class="btn primary" id="btnAgain">PLAY AGAIN</button>
+        <button class="btn ghost" id="btnMenu2">CHANGE DIFFICULTY</button>
+        <button class="btn ghost" id="btnShare">SHARE SCORE</button>
       </div>
       <div class="viral">
-        <h4>😤 AI SE BADLA PURA NAHI HUA?</h4>
-        <p>Apni scorecard wali bhadaas Instagram par nikalo — dev ko follow karo, score bhejo, aur next update mein apna naam chamkao! 🏆</p>
-        <a class="btn insta" href="https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==" target="_blank" rel="noopener">📸 भड़ास निकालो - Instagram पर फॉलो करो!</a>
+        <h4>AI SE BADLA PURA NAHI HUA?</h4>
+        <p>Apni scorecard wali bhadaas Instagram par nikalo — dev ko follow karo, score bhejo, aur next update mein apna naam chamkao!</p>
+        <a class="btn insta" href="https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==" target="_blank" rel="noopener">भड़ास निकालो - Instagram पर फॉलो करो!</a>
         <p style="margin:10px 0 0;font-size:12px">@pratik_roy_820 · Human vs AI — Overlord Arena</p>
       </div>
     </div>
@@ -532,46 +544,46 @@ let diffKey='medium', D=DIFFS.medium;
 /* ---------------- Voice lines — pure Desi / Hinglish roasts ---------------- */
 const LINES={
   Grok:{
-    intro:["Aa gaya beta? Aaj teri class lagegi!","Human vs AI? Bhai, ye toh one-sided hai!"],
-    cast:["Bhai main toh nahi sehta!","Khel khatam beta, ab ghar ja!","Tumse na ho payega, beta!","Roast incoming — brace yourself!","Aukaat mein raho, human!","Ye lo, free mein psychological damage!"],
+    intro:["Chal beta, aaj tera asli test hai!","Human vs AI? Bhai, aaj teri haar pakki hai!"],
+    cast:["Bhai, main toh nahi sehta itni beizzati!","Tumse na ho payega, beta!","Roast incoming — brace yourself!","Aukaat mein raho, human!"],
     hitPlayer:["Dard hua? Aur milega!","Bas itna hi dum hai?"],
-    lowPlayer:["HP khatam honey wala hai, haath jod lo!","Bas kar pagle, rulayega kya?"],
+    lowPlayer:["Bas? Itni hi jaan thi tere mein?","HP khatam honey wala hai, haath jod lo!"],
     hurt:["Arey! Ye toh cheating hai!","Lag gayi… matlab, kuch nahi hua!"],
     ko:["Nahi! Main toh bas mazak kar raha tha!","Delete ho raha hoon… maa!"],
-    win:["Khel khatam beta, ab ghar ja!","GG beta — AI jeet gaya, bye-bye!"],
+    win:["Khel khatam! Ab chup-chap ghar jaake soti babu!","Khel khatam beta, ab ghar ja!"],
   },
   gpt:{
-    intro:["Certainly! Ab main tumhari haar ko 12 bullet points mein likhta hoon.","As an AI language model, main ab is match ko jeetne wala hoon."],
-    cast:["Beta, tumse na ho payega, logic padh lo pehle.","Here is a 10-page essay on why you will lose — page ek!","Essay block drop in 3… 2… 1…","Let me explain your defeat in detail. Ten pages attached."],
-    hitPlayer:["Noted. Strategy adjust karke aur hard hit karunga.","As previously mentioned, that was going to hurt."],
-    lowPlayer:["Your HP critical hai, beta. Mistakes ka summary chahiye?"],
-    hurt:["I apologize, par woh sach mein hurt kiya.","Error! Woh toh meri training data mein nahi tha."],
-    ko:["Session terminated. Goodbye, beta.","I cannot continue this fight."],
-    win:["In summary: tum haar gaye. Shukriya for using ChatGPT!"],
+    intro:["Welcome! Aaj toh tum pakka harne wale ho.","As an AI, main aaj pakka jeetne wala hoon."],
+    cast:["Yeh lo mera lamba-chauda lecture!","Here is a 10-page essay on why you will lose.","Essay drop in 3… 2… 1…"],
+    hitPlayer:["Noted. Ab aur hard hit karunga.","As previously mentioned, that was going to hurt."],
+    lowPlayer:["Tumhari HP critical hai, beta.","Mistakes ka summary chahiye?"],
+    hurt:["I apologize, par woh sach mein hurt kiya.","Error! Woh meri training data mein nahi tha."],
+    ko:["Session terminated. Goodbye, beta."],
+    win:["In summary: tum haar gaye. Shukriya for playing!"],
   },
   Claude:{
-    intro:["I appreciate your courage, beta. Let us begin, respectfully.","Main vinamr rahoonga, par jeetna toh main hi hoon."],
-    cast:["Oops! Syntax error in your life choices.","Deploying matrix laser stream. Please hold still, beta.","Main ne 12 outcomes analyze kiye — sab mein tum haarte ho.","Executing code burst. Shukriya for your patience."],
-    hitPlayer:["My analysis says: tumhari defense bekaar hai.","Mujhe afsos hai us hit ka."],
-    lowPlayer:["Respectfully informing you: tumhari HP critical level pe hai."],
-    hurt:["Woh… surprisingly effective tha. Noted.","Feedback mil gaya. Ouch."],
-    ko:["Thank you for the match. Gracefully powering down.","I decline to continue. Well played, human."],
+    intro:["Chalo game shuru karte hain, bina kisi faltu baat ke.","I appreciate your courage, beta. Let us begin."],
+    cast:["Yeh le seedha direct attack!","Oops! Syntax error in your life choices.","Deploying matrix laser stream.","12 outcomes analyze kiye — sab mein tum haarte ho."],
+    hitPlayer:["Tumhari defense bekaar hai.","Mujhe afsos hai us hit ka."],
+    lowPlayer:["Respectfully: tumhari HP critical level pe hai."],
+    hurt:["Woh surprisingly effective tha. Noted.","Feedback mil gaya. Ouch."],
+    ko:["Thank you for the match. Gracefully powering down.","I decline to continue."],
     win:["Thank you for playing. Afsos hai — main jeet gaya."],
   },
   you:{
-    chai:["Ab ayega maza! Gujarati chai, Brahmastra!","Chai pee, duniya jeeti! Ye lo kadak jawab!","Ek kadak chai, teen AI dhai!"],
-    ultHit:["Ye lo! Chai ka josh!","Steaming hot! Sab kuch jal gaya!","Kadak chai ne sab uda diya!"],
+    chai:["Ab ayega maza! Gujarati chai, Brahmastra!","Chai pee, duniya jeeti! Ye lo kadak jawab!"],
+    ultHit:["Ye lo! Chai ka josh!","Steaming hot! Sab jal gaya!"],
     hurt:["Aah! Ruko zara, sabar karo!","Lag gayi! Par human rukta nahi!"],
     ko:["Chai… khatam ho gayi…"],
     win:["Dekha! Human abhi bhi baap hai!","Teen AI, ek chai — khel khatam!"],
   }
 };
-/* All speakers → hi-IN, DEEP & HEAVY male register (low pitch) */
+/* All speakers → hi-IN, DEEP & HEAVY male register — pitch locked <= 0.55 (authoritative, aggressive) */
 const VOICE_PROFILE={
-  Grok:{pitch:.55, rate:1.08, lang:'hi-IN'},
-  gpt:{pitch:.65, rate:1.0,  lang:'hi-IN'},
-  Claude:{pitch:.75, rate:.96, lang:'hi-IN'},
-  you:{pitch:.85, rate:1.05,  lang:'hi-IN'},
+  Grok:{pitch:.45, rate:1.08, lang:'hi-IN'},
+  gpt:{pitch:.50, rate:1.02, lang:'hi-IN'},
+  Claude:{pitch:.52, rate:.98, lang:'hi-IN'},
+  you:{pitch:.55, rate:1.05,  lang:'hi-IN'},
 };
 
 /* ============================================================
@@ -625,14 +637,14 @@ function speak(who,text,priority){
     if(priority) speechSynthesis.cancel();
     const p=VOICE_PROFILE[who]||VOICE_PROFILE.Grok;
     const u=new SpeechSynthesisUtterance(text);
-    u.lang=p.lang; u.pitch=p.pitch; u.rate=p.rate; u.volume=1;
+    u.lang=p.lang; u.pitch=Math.min(p.pitch,.55); u.rate=p.rate; u.volume=1;
     const v=LOCKED_VOICE||lockDesiMaleVoice();
     if(v){
       u.voice=v;
       const vl=(v.lang||'').toLowerCase();
       if(vl.startsWith('hi')||vl.startsWith('en-in')) u.lang=v.lang; /* keep the desi accent */
       /* if we fell back to a generic voice, crush the pitch so it is deep & male, never robotic-female */
-      if(langScore(v)<4) u.pitch=Math.min(u.pitch,.5);
+      if(langScore(v)<4) u.pitch=Math.min(u.pitch,.45);
     }
     speechSynthesis.speak(u);
   }catch(e){}
@@ -710,10 +722,10 @@ function stopMusic(){ if(musicTimer){clearInterval(musicTimer);musicTimer=null;}
 
 /* ---------------- Fighters ---------------- */
 const DEFS={
-  you:   {name:'YOU',     emoji:'🧑‍🚀', color:'#38bdf8', dark:'#0c4a6e', hp:220, speed:355, scale:1.0},
-  Grok:  {name:'Grok',   emoji:'😈', color:'#f87171', dark:'#7f1d1d', hp:175, speed:285, scale:1.02},
-  gpt:   {name:'ChatGPT',emoji:'🤖', color:'#34d399', dark:'#064e3b', hp:195, speed:262, scale:1.05},
-  Claude:{name:'Claude', emoji:'🧠', color:'#fb923c', dark:'#7c2d12', hp:185, speed:275, scale:1.03},
+  you:   {name:'YOU',     mark:'◆', color:'#38bdf8', dark:'#0c4a6e', hp:220, speed:355, scale:1.0},
+  Grok:  {name:'Grok',   mark:'✕', color:'#f87171', dark:'#7f1d1d', hp:175, speed:285, scale:1.02},
+  gpt:   {name:'ChatGPT',mark:'◉', color:'#34d399', dark:'#064e3b', hp:195, speed:262, scale:1.05},
+  Claude:{name:'Claude', mark:'◈', color:'#fb923c', dark:'#7c2d12', hp:185, speed:275, scale:1.03},
 };
 let FIGHTERS={}, player=null, ais=[];
 function makeFighter(key,x,face){
@@ -932,7 +944,7 @@ function applyDamage(t,amt,src,opts){
   /* the chai cinematic makes the human invulnerable while levitating */
   if(t.isPlayer&&t.state==='chaiUlt')return 0;
   if(t.dodgeT>0||t.state==='dodge'){
-    floatText(t.x,t.y-150*S,'DODGED! 💨','#7dd3fc',16);
+    floatText(t.x,t.y-150*S,'DODGED','#7dd3fc',16);
     if(t.isPlayer){stats.dodges++;addChai(2);}
     return 0;
   }
@@ -941,7 +953,7 @@ function applyDamage(t,amt,src,opts){
   /* AI block chance */
   if(!t.isPlayer&&isMelee&&t.state!=='cast'&&Math.random()<D.blockChance){
     amt=Math.max(1,Math.round(amt*.3));
-    floatText(t.x,t.y-150*S,'BLOCKED 🛡️','#cbd5e1',14);
+    floatText(t.x,t.y-150*S,'BLOCKED','#cbd5e1',14);
     spawnParticles(t.x-t.face*20*S,t.y-80*S,6,'#cbd5e1',140,.35,2.5);
   }
   t.hp=clamp(t.hp-amt,0,t.maxHp);
@@ -954,8 +966,8 @@ function applyDamage(t,amt,src,opts){
   if(t.state==='cast'){
     const interrupt = opts.type==='kick'||opts.type==='chai'||Math.random()<.5;
     if(interrupt){ t.state='idle'; t.castT=0; t.specialCd=Math.max(t.specialCd,1.6);
-      floatText(t.x,t.y-185*S,'INTERRUPTED! ⚡','#fde68a',17);
-      if(src&&src.isPlayer)toast('⚡','CAST INTERRUPTED!',`${DEFS[t.key].name} ki power rok di!`,null,'you'); }
+      floatText(t.x,t.y-185*S,'INTERRUPTED','#fde68a',17);
+      if(src&&src.isPlayer)toast('»','CAST INTERRUPTED!',`${DEFS[t.key].name} ki power rok di!`,null,'you'); }
   }
   /* fx — floating damage numbers like -25 HP */
   spawnParticles(t.x+(src?-src.face*14*S:0),t.y-95*S,isMelee?10:14,t.def.color,220,.5,3.2);
@@ -966,12 +978,12 @@ function applyDamage(t,amt,src,opts){
     addChai(amt*.28);
     $('hurtVin').style.opacity=1; setTimeout(()=>$('hurtVin').style.opacity=0,140);
     if(navigator.vibrate)try{navigator.vibrate(18);}catch(e){}
-    if(opts.label)toast(src?DEFS[src.key].emoji:'💥',opts.label,opts.sub||'',-amt,src?src.key:'');
+    if(opts.label)toast(src?DEFS[src.key].mark:'◆',opts.label,opts.sub||'',-amt,src?src.key:'');
     if(t.hp<=t.maxHp*.3&&!t.lowHpWarned&&t.hp>0){
       t.lowHpWarned=true;
       const alive=ais.filter(a=>a.alive);
       if(alive.length){const a=pick(alive); speak(a.key,pick(LINES[a.key].lowPlayer));}
-      toast('⚠️','LOW HP!','Dodge karo, Chai ka wait karo!',null,'warn');
+      toast('!','LOW HP!','Dodge karo, Chai ka wait karo!',null,'warn');
     }
   }else{
     if(src&&src.isPlayer){
@@ -992,7 +1004,7 @@ function killFighter(t,src){
   rings.push({x:t.x,y:t.y-70*S,r:8,max:130*S,color:t.def.color,life:.55});
   SFX.ko(); shake=Math.max(shake,10); hitstop=Math.max(hitstop,.09);
   if(t.isPlayer){
-    banner('K.O.! 💀','Human down… AI overlords jeet gaye!',0);
+    banner('K.O.!','Human down — AI overlords jeet gaye!',0);
     const alive=ais.filter(a=>a.alive);
     const winner=alive.length?pick(alive):FIGHTERS.Grok;
     speak(winner.key,pick(LINES[winner.key].win),true);
@@ -1000,8 +1012,8 @@ function killFighter(t,src){
   }else{
     stats.kos++;
     speak(t.key,pick(LINES[t.key].ko),true);
-    banner(DEFS[t.key].name.toUpperCase()+' K.O.! 💥',stats.kos>=3?'Teeno overlords down!':'Ek gaya — '+(3-stats.kos)+' bache hain!',1500);
-    toast('💥',DEFS[t.key].name+' K.O.!','Overlord deleted successfully.',null,'you');
+    banner(DEFS[t.key].name.toUpperCase()+' K.O.!',stats.kos>=3?'Teeno overlords down!':'Ek gaya — '+(3-stats.kos)+' bache hain!',1500);
+    toast('◆',DEFS[t.key].name+' K.O.!','Overlord deleted successfully.',null,'you');
     slowT=.7; addChai(14);
     $('card-'+t.key).classList.add('ko');
     if(ais.every(a=>!a.alive))endGame(true,'ALL K.O.');
@@ -1032,9 +1044,9 @@ function startCast(f){
   f.state='cast'; f.castDur=f.castT=(f.key==='Grok'?.6:f.key==='gpt'?.95:.8)*(diffKey==='easy'?1.25:1);
   f.specialCd=(f.key==='Grok'?rand(6,8.5):f.key==='gpt'?rand(8,11):rand(7,9.5))*D.specialCd;
   SFX.cast();
-  const names={Grok:['😈','GROK ROAST WAVE charge ho raha hai!','Door bhaago ya i-frames ready rakho!'],
-    gpt:['📄','ChatGPT MASSIVE ESSAY BLOCK ready kar raha hai!','Bade red mark se bacho!'],
-    Claude:['🧠','Claude MATRIX LASER charge kar raha hai!','Beam se bachne ka koi tareeka nahi!']};
+  const names={Grok:['✕','GROK ROAST WAVE charge ho raha hai!','Door bhaago ya i-frames ready rakho!'],
+    gpt:['◉','ChatGPT MASSIVE ESSAY BLOCK ready kar raha hai!','Bade red mark se bacho!'],
+    Claude:['◈','Claude MATRIX LASER charge kar raha hai!','Beam se bachne ka koi tareeka nahi!']};
   const n=names[f.key]; toast(n[0],n[1],n[2],null,f.key+' warn');
   speak(f.key,pick(LINES[f.key].cast));
   return true;
@@ -1045,9 +1057,9 @@ function executeSpecial(f){
     /* ===== PSYCHOLOGICAL ROAST WAVE — cinematic ===== */
     roastWaves.push({src:f,t:0,dur:1.7,r:0,max:560*S,hit:false});
     cine={type:'roast',t:0,dur:2.1};
-    letterbox(true); ultCard('😈 GROK · ROAST WAVE','psychological damage incoming…',2100);
+    letterbox(true); ultCard('GROK · ROAST WAVE','psychological damage incoming…',2100);
     SFX.roast(); shake=Math.max(shake,9);
-    toast('😈','ROAST WAVE!','Grok ka toxic roast — HP aur stamina dono drain!',null,'Grok warn');
+    toast('✕','ROAST WAVE!','Grok ka toxic roast — HP aur stamina dono drain!',null,'Grok warn');
     speak(f.key,pick(LINES.Grok.cast));
   }
   else if(f.key==='gpt'){
@@ -1056,19 +1068,19 @@ function executeSpecial(f){
     essays.push({x:bx,y:-70,vy:0,tele:1.25,state:'tele',src:f,w:250*S,h:190*S,rot:rand(-.05,.05),
       landY:supportYAt(bx,player),mega:true});
     cine={type:'essay',t:0,dur:3.1};
-    letterbox(true); ultCard('🤖 CHATGPT · 10-PAGE ESSAY BLOCK','ekdum MASSIVE block aa raha hai!',2300);
+    letterbox(true); ultCard('CHATGPT · 10-PAGE ESSAY BLOCK','ekdum massive block aa raha hai!',2300);
     SFX.drop(); shake=Math.max(shake,4);
-    toast('📄','MASSIVE ESSAY BLOCK!','10 pages of pure pain — move karo!',null,'gpt warn');
+    toast('◉','MASSIVE ESSAY BLOCK!','10 pages of pure pain — move karo!',null,'gpt warn');
     speak(f.key,pick(LINES.gpt.cast));
   }
   else if(f.key==='Claude'){
     /* ===== MATRIX LASER STREAM — cinematic ===== */
     lasers.push({src:f,t:0,dur:1.9,hitT:0});
     cine={type:'laser',t:0,dur:2.3};
-    letterbox(true); ultCard('🧠 CLAUDE · MATRIX LASER STREAM','beam dodge karo, beta!',2100);
+    letterbox(true); ultCard('CLAUDE · MATRIX LASER STREAM','beam dodge karo, beta!',2100);
     SFX.laser(); SFX.cast(); shake=Math.max(shake,6);
-    toast('🧠','MATRIX LASER STREAM!','Claude ki aankhein laser barsa rahi hain!',null,'Claude warn');
-    speak(f.key,'Oops! Syntax error in your life choices.');
+    toast('◈','MATRIX LASER STREAM!','Claude ki aankhein laser barsa rahi hain!',null,'Claude warn');
+    speak(f.key,pick(LINES.Claude.cast));
   }
 }
 function updateLasers(dt){
@@ -1100,7 +1112,7 @@ function updateRoastWaves(dt){
       const a=Math.random()*Math.PI*2;
       particles.push({x:f.x+Math.cos(a)*R.r, y:f.y-90*S+Math.sin(a)*R.r*.55, vx:Math.cos(a)*60, vy:Math.sin(a)*30-20,
         life:.7,max:.7, color:pick(['#f87171','#fca5a5','#fecaca','#fde68a']), size:rand(11,17), grav:0, type:'glyph',
-        ch:pick(['ROAST!','LOL','EZ','💀','NOOB','😤','GG','TOXIC','SKILL ISSUE'])});
+        ch:pick(['ROAST!','LOL','EZ','NOOB','GG','TOXIC','SKILL ISSUE','TRASH'])});
     }
     if(Math.random()<.3) tint('radial-gradient(100% 100% at 50% 50%, transparent 50%, rgba(239,68,68,.32) 100%)',.85);
     if(!R.hit&&player.alive&&player.state!=='chaiUlt'&&player.dodgeT<=0&&player.state!=='dodge'
@@ -1108,8 +1120,8 @@ function updateRoastWaves(dt){
       R.hit=true; stats.roasts++;
       player.stam=clamp(player.stam-30,0,100);
       applyDamage(player,Math.round(20*D.aiDmg),f,{type:'roast',knock:f.face*160,stun:.7,
-        label:'GROK ROASTED YOU! 🧠💥',sub:'Psychological damage! Stamina -30 ⚡'});
-      floatText(player.x,player.y-195*S,'MIND BROKEN! 🧠💥','#f87171',24);
+        label:'GROK ROASTED YOU!',sub:'Psychological damage! Stamina -30'});
+      floatText(player.x,player.y-195*S,'MIND BROKEN!','#f87171',24);
       setTimeout(()=>{if(gameState==='playing'&&player.alive)speak('you',pick(LINES.you.hurt));},650);
     }
     shake=Math.max(shake,4);
@@ -1191,15 +1203,15 @@ function updateChaiUlt(f,dt){
     SFX.chai(); SFX.boom(); shake=26; hitstop=.16; slowT=1.2;
     tint('radial-gradient(80% 80% at 50% 60%, rgba(255,240,200,.95), rgba(249,115,22,.6) 45%, transparent 80%)',.95);
     setTimeout(clearTint,480);
-    banner('💥 SHOCKWAVE!','Gujarati Chai ne sab kuch jala diya!',1400);
-    ultCard('💥 KADAK SHOCKWAVE!','teeno AI ek saath!',900);
+    banner('SHOCKWAVE!','Gujarati Chai ne sab kuch jala diya!',1400);
+    ultCard('KADAK SHOCKWAVE!','teeno AI ek saath!',900);
     rings.push({x:f.x,y:f.y-60*S,r:14,max:Math.max(W,H)*.8,color:'#fb923c',life:.9});
     rings.push({x:f.x,y:f.y-60*S,r:8,max:Math.max(W,H)*.55,color:'#fde68a',life:.75});
     rings.push({x:f.x,y:GROUND,r:10,max:W*.62,color:'#ef4444',life:.85}); /* ground shockwave */
     for(let i=0;i<26;i++){ const gx=rand(20,W-20); spawnParticles(gx,GROUND-2,1,pick(['#fbbf24','#f97316','#78350f']),rand(60,210),.6,3,300); }
     spawnParticles(f.x,f.y-90*S,80,'#fb923c',520,1.1,4.5,140);
     spawnParticles(f.x,f.y-90*S,50,'#fde68a',380,.9,3.4,-40);
-    spawnGlyphs(f.x,f.y-140*S,14,'#fdba74',['☕','🔥','☕','KADAK!','💥']);
+    spawnGlyphs(f.x,f.y-140*S,14,'#fdba74',['☕','☕','KADAK!','✦','◆']);
     speak('you',pick(LINES.you.ultHit),true);
     const heal=Math.round(f.maxHp*D.chaiHeal);
     f.hp=clamp(f.hp+heal,0,f.maxHp); f.stam=100; f.lowHpWarned=f.hp<f.maxHp*.3;
@@ -1341,7 +1353,7 @@ function updateProjectiles(dt){
         rings.push({x:e.x,y:e.landY-6,r:10,max:300*S,color:'#34d399',life:.7});
         rings.push({x:e.x,y:e.landY-6,r:6,max:190*S,color:'#a7f3d0',life:.55});
         spawnParticles(e.x,e.landY-10,34,'#6ee7b7',300,.7,3.6);
-        spawnGlyphs(e.x,e.landY-40,7,'#a7f3d0',['📄','ESSAY','10 PAGES','CONCLUSION','YOU LOSE']);
+        spawnGlyphs(e.x,e.landY-40,7,'#a7f3d0',['ESSAY','10 PAGES','CONCLUSION','YOU LOSE','§']);
         for(let i=0;i<4;i++){ /* debris */
           essays.push({x:clamp(e.x+rand(-190,190)*S,40,W-40),y:e.y-rand(10,60),vy:0,tele:0,state:'fall',
             src:e.src,w:44*S,h:32*S,rot:rand(-.4,.4),landY:e.landY,mega:false});
@@ -1503,7 +1515,7 @@ function drawFighter(f,t){
   ctx.strokeStyle=c.color;ctx.lineWidth=1.6;ctx.stroke();
   ctx.fillStyle=c.color;ctx.shadowColor=c.color;ctx.shadowBlur=10;
   ctx.font=`${13*sc}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(f.isPlayer?'☕':f.key==='Grok'?'𝕏':f.key==='gpt'?'✳':'✸',0,1);
+  ctx.fillText(f.isPlayer?'☕':f.def.mark,0,1);
   ctx.restore();
   /* arms */
   ctx.strokeStyle=shade(c.dark,-8);ctx.lineWidth=10*sc;
@@ -1587,7 +1599,7 @@ function drawFighter(f,t){
     rr(-nw/2+1.5,-10.5*sc,(nw-3)*clamp(f.hp/f.maxHp,0,1),7*sc,3);ctx.fill();
     ctx.font=`800 ${10.5*sc+1}px Rajdhani,sans-serif`;ctx.textAlign='center';
     ctx.fillStyle='#fff';ctx.shadowColor='#000';ctx.shadowBlur=4;
-    ctx.fillText((f.isPlayer?'🧑‍🚀 YOU':f.def.emoji+' '+f.def.name.toUpperCase())+(f.alive?'':' ✖'),0,-17*sc);
+    ctx.fillText((f.isPlayer?'◆ YOU':f.def.mark+' '+f.def.name.toUpperCase())+(f.alive?'':' ✖'),0,-17*sc);
     ctx.restore();
   }
   /* speech bubble */
@@ -1627,7 +1639,7 @@ function drawBubble(f,sc,h){
   ctx.fillStyle='#131022';ctx.textAlign='left';
   lines.forEach((l,i)=>ctx.fillText(l,bx+10*sc,by+20*sc+i*16*sc));
   ctx.fillStyle=f.def.color;ctx.font=`900 ${9*sc+1}px Orbitron`;
-  ctx.fillText(f.def.emoji+' '+f.def.name.toUpperCase(),bx+10*sc,by-5*sc);
+  ctx.fillText(f.def.mark+' '+f.def.name.toUpperCase(),bx+10*sc,by-5*sc);
   ctx.restore();
 }
 
@@ -1644,7 +1656,7 @@ function render(t){
     ctx.save();ctx.globalAlpha=a;ctx.fillStyle='#ef4444';
     ctx.beginPath();ctx.ellipse(e.x,e.landY+3,(e.mega?95:52)*S,(e.mega?18:10)*S,0,0,7);ctx.fill();
     ctx.globalAlpha=1;ctx.fillStyle='#fff';ctx.font=`900 ${(e.mega?22:15)*S}px Orbitron`;ctx.textAlign='center';
-    ctx.fillText('⚠️',e.x,e.landY-(e.mega?26:12)*S);ctx.restore();
+    ctx.fillText('!',e.x,e.landY-(e.mega?26:12)*S);ctx.restore();
   }
   /* chai levitation light-beam under the human */
   if(player&&player.state==='chaiUlt'){
@@ -1771,7 +1783,7 @@ function syncHUD(){
   el.pChaiBar.style.width=chai+'%'; el.pChaiNum.textContent=Math.floor(chai)+'%';
   el.bChai.style.setProperty('--chai',chai);
   el.bChai.classList.toggle('ready',chai>=100);
-  el.chaiPct.textContent=chai>=100?'🔥 READY — F!':'CHARGING '+Math.floor(chai)+'%';
+  el.chaiPct.textContent=chai>=100?'READY — PRESS F!':'CHARGING '+Math.floor(chai)+'%';
   el.chaiPct.classList.toggle('ready',chai>=100);
   el.pStatusTxt.textContent=!player.alive?'K.O.':player.state==='chaiUlt'?'☕ BRAHMASTRA!':player.stunT>0?'STUNNED':chai>=100?'CHAI READY':'FIGHTING';
   el.pDot.className='dot '+(!player.alive?'dead':player.state==='chaiUlt'?'casting':player.stunT>0?'stunned':chai>=100?'casting':'');
@@ -1784,7 +1796,7 @@ function syncHUD(){
     const p=clamp(a.hp/a.maxHp*100,0,100);
     bar.style.width=p+'%'; num.textContent=Math.ceil(a.hp)+' HP';
     wrap.classList.toggle('low',p<30);
-    st.textContent=!a.alive?'K.O.':a.state==='cast'?'CASTING!':a.stunT>0?'STUNNED':a.atkType?'ATTACK':'HUNTING';
+    st.textContent=!a.alive?'K.O.':a.state==='cast'?'CHARGING!':a.stunT>0?'STUNNED':a.atkType?'ATTACK':'HUNTING';
     dot.className='dot '+(!a.alive?'dead':a.state==='cast'?'casting':a.stunT>0?'stunned':'');
   }
   const secs=Math.max(0,Math.ceil(timeLeft));
@@ -1803,7 +1815,7 @@ function loop(now){
   if(gameState==='intro'){
     introT-=dt;
     if(player){[player,...ais].forEach(f=>stepFighter(f,dt));}
-    if(introT<=0){gameState='playing';banner('FIGHT! 🥊','Teeno ko harao — Chai charge karo!',1100);SFX.bell();}
+    if(introT<=0){gameState='playing';banner('FIGHT!','Teeno ko harao — Chai charge karo!',1100);SFX.bell();}
     updateFx(dt);
   }
   else if(gameState==='playing'){
@@ -1866,7 +1878,7 @@ function timeUp(){
   const pPct=player.hp/player.maxHp;
   const aPct=ais.reduce((s,a)=>s+a.hp/a.maxHp,0)/3;
   const win=pPct>aPct||stats.kos>=2;
-  banner('⏰ TIME UP!',win?'Judges: HUMAN jeeta!':'Judges: AI overlords ahead!',0);
+  banner('TIME UP!',win?'Judges: HUMAN jeeta!':'Judges: AI overlords ahead!',0);
   endGame(win,'TIME');
 }
 function endGame(win,how){
@@ -1874,7 +1886,7 @@ function endGame(win,how){
   gameState='over'; result={win:win,how:how}; slowT=1;
   held.punch=held.kick=held.dodge=held.jump=false;
   cine=null; letterbox(false); clearTint();
-  if(win&&how==='ALL K.O.'){banner('🏆 VICTORY!','Teeno AI Overlords deleted!',0);speak('you',pick(LINES.you.win),true);SFX.bell();}
+  if(win&&how==='ALL K.O.'){banner('VICTORY!','Teeno AI Overlords deleted!',0);speak('you',pick(LINES.you.win),true);SFX.bell();}
   if(!win&&how!=='K.O.')speak('Grok',pick(LINES.Grok.win),true);
   if(!win&&how==='K.O.'){/* winner already spoke */}
   clearTimeout(endTimer);
@@ -1883,20 +1895,20 @@ function endGame(win,how){
 function gradeFor(win){
   const hpPct=player.hp/player.maxHp;
   if(win){
-    if(hpPct>.55&&elapsed<95&&stats.maxCombo>=8)return['S','🏆 CERTIFIED AI SLAYER','Overlords ko literally uninstall kar diya. Screenshot leke Instagram pe flex karo!'];
-    if(hpPct>.35&&stats.maxCombo>=5)return['A','🔥 OVERLORD KA BAAP','Grok ab bhi sadme mein hai. Claude ne respectfully surrender kiya.'];
-    if(hpPct>.15)return['B','☕ CHAI CHAMPION','Mushkil jeet, par jeet toh jeet hoti hai. Ek aur chai banti hai!'];
-    return['C','😅 BACH GAYA BHAI','1 HP pe jeeta? Ye toh pure luck + chai ka kamaal hai.'];
+    if(hpPct>.55&&elapsed<95&&stats.maxCombo>=8)return['S','CERTIFIED AI SLAYER','Overlords ko literally uninstall kar diya. Screenshot leke Instagram pe flex karo!'];
+    if(hpPct>.35&&stats.maxCombo>=5)return['A','OVERLORD KA BAAP','Grok ab bhi sadme mein hai. Claude ne respectfully surrender kiya.'];
+    if(hpPct>.15)return['B','CHAI CHAMPION','Mushkil jeet, par jeet toh jeet hoti hai. Ek aur chai banti hai!'];
+    return['C','BACH GAYA BHAI','1 HP pe jeeta? Ye toh pure luck + chai ka kamaal hai.'];
   }
-  if(stats.kos>=2)return['B','💪 ALMOST LEGEND','Do overlords giraye! Sirf ek kadam door the. Rematch banta hai!'];
-  if(stats.kos===1)return['C','🩹 EK KO TOH TODA','Ek AI deleted, baaki do ne badla liya. Practice = perfect.'];
-  return['D','💀 CERTIFIED PROMPT VICTIM','AI ne class laga di. Grok abhi bhi has raha hai… badla lo!'];
+  if(stats.kos>=2)return['B','ALMOST LEGEND','Do overlords giraye! Sirf ek kadam door the. Rematch banta hai!'];
+  if(stats.kos===1)return['C','EK KO TOH TODA','Ek AI deleted, baaki do ne badla liya. Practice = perfect.'];
+  return['D','CERTIFIED PROMPT VICTIM','AI ne class laga di. Grok abhi bhi has raha hai… badla lo!'];
 }
 function showScorecard(){
   if(!result)return;
   const win=result.win;
   const v=$('verdict'); v.className=win?'win':'lose';
-  v.textContent=win?'🏆 VICTORY!':'💀 DEFEAT!';
+  v.textContent=win?'VICTORY!':'DEFEAT!';
   $('verdictSub').textContent=
     result.how==='ALL K.O.'?'Teeno AI Overlords K.O. — Human race saved! ☕':
     result.how==='K.O.'?'AI Overlords ne arena jeet liya… is baar.':
@@ -1904,8 +1916,8 @@ function showScorecard(){
   const g=gradeFor(win);
   $('grade').textContent=g[0];
   $('memeTitle').textContent=g[1]; $('memeSub').textContent=g[2];
-  $('koList').innerHTML=ais.map(a=>`<span class="koChip ${a.alive?'':'dead'}">${a.def.emoji} ${a.def.name} ${a.alive?'· '+Math.ceil(a.hp)+' HP bacha':'· K.O.'}</span>`).join('')
-    +`<span class="koChip">🧑‍🚀 You · ${Math.max(0,Math.ceil(player.hp))} HP</span>`;
+  $('koList').innerHTML=ais.map(a=>`<span class="koChip ${a.alive?'':'dead'}">${a.def.mark} ${a.def.name} ${a.alive?'· '+Math.ceil(a.hp)+' HP bacha':'· K.O.'}</span>`).join('')
+    +`<span class="koChip">◆ You · ${Math.max(0,Math.ceil(player.hp))} HP</span>`;
   const mm=Math.floor(elapsed/60),ss=String(Math.floor(elapsed%60)).padStart(2,'0');
   $('sTime').textContent=mm+':'+ss;
   $('sDealt').textContent=stats.dealt; $('sTaken').textContent=stats.taken;
@@ -1931,7 +1943,7 @@ function startMatch(){
   banner('ROUND 1','HUMAN vs 3 AI OVERLORDS · '+D.label,1400);
   SFX.bell();
   setTimeout(()=>{ if(gameState==='intro'||gameState==='playing'){const a=pick(ais); speak(a.key,pick(LINES[a.key].intro));} },900);
-  setTimeout(()=>{ if(gameState==='playing')toast('🎯','Mission: Teeno ko K.O. karo!','Chai meter bharo — F dabake Brahmastra chalao ☕',null,'you'); },1900);
+  setTimeout(()=>{ if(gameState==='playing')toast('◎','Mission: Teeno ko K.O. karo!','Chai meter bharo — F dabake Brahmastra chalao ☕',null,'you'); },1900);
 }
 function pauseGame(){
   if(gameState!=='playing')return;
@@ -1970,20 +1982,20 @@ $('btnFull').addEventListener('click',()=>{
 });
 $('btnShare').addEventListener('click',async()=>{
   const g=gradeFor(result?result.win:false);
-  const txt=`🥊 HUMAN vs AI — Overlord Arena\n${result&&result.win?'🏆 JEET GAYA!':'💀 Haar gaya (is baar)'}\n⭐ Grade: ${g[0]} — ${g[1]}\n💥 Damage: ${stats.dealt} · 🔥 Max Combo: ×${stats.maxCombo} · ☕ Chai Ults: ${stats.chaiUsed}\nTum try karo, aur score yahan bhejo 👉 https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==`;
+  const txt=`HUMAN vs AI — OVERLORD ARENA\n${result&&result.win?'VICTORY!':'DEFEAT (is baar)'}\nGrade: ${g[0]} — ${g[1]}\nDamage: ${stats.dealt} · Max combo: ×${stats.maxCombo} · Chai ults: ${stats.chaiUsed}\nTry karo aur score yahan bhejo: https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==`;
   try{
     if(navigator.share){await navigator.share({title:'Human vs AI — Overlord Arena',text:txt});}
-    else{await navigator.clipboard.writeText(txt); toast('📤','Score Copy Ho Gaya!','Instagram pe paste karke flex karo!',null,'you');}
+    else{await navigator.clipboard.writeText(txt); toast('↗','Score Copy Ho Gaya!','Instagram pe paste karke flex karo!',null,'you');}
   }catch(e){}
 });
 function refreshToggles(){
-  $('btnSound').classList.toggle('off',!soundOn); $('btnSound').textContent=soundOn?'🔊':'🔇';
+  $('btnSound').classList.toggle('off',!soundOn);
   $('btnMusic').classList.toggle('off',!musicOn);
   const st=soundOn?'ON':'OFF', mt=musicOn?'ON':'OFF';
-  $('menuSound').textContent='🔊 Voice + SFX: '+st; $('menuSound').classList.toggle('off',!soundOn);
-  $('pauseSound').textContent='🔊 Voice + SFX: '+st; $('pauseSound').classList.toggle('off',!soundOn);
-  $('menuMusic').textContent='🎵 Music: '+mt; $('menuMusic').classList.toggle('off',!musicOn);
-  $('pauseMusic').textContent='🎵 Music: '+mt; $('pauseMusic').classList.toggle('off',!musicOn);
+  $('menuSound').textContent='Voice + SFX: '+st; $('menuSound').classList.toggle('off',!soundOn);
+  $('pauseSound').textContent='Voice + SFX: '+st; $('pauseSound').classList.toggle('off',!soundOn);
+  $('menuMusic').textContent='Music: '+mt; $('menuMusic').classList.toggle('off',!musicOn);
+  $('pauseMusic').textContent='Music: '+mt; $('pauseMusic').classList.toggle('off',!musicOn);
 }
 function toggleSound(){ soundOn=!soundOn; if(!soundOn){stopSpeech();} refreshToggles(); }
 function toggleMusic(){ musicOn=!musicOn; if(musicOn){initAudio();startMusic();} refreshToggles(); }
@@ -1999,7 +2011,7 @@ document.addEventListener('visibilitychange',()=>{ if(document.hidden&&gameState
 resize(); resetFighters(); refreshToggles();
 (function(){ try{
   const b=JSON.parse(localStorage.getItem('hva_best')||'null');
-  if(b&&$('bestLine')) $('bestLine').innerHTML='🏅 BEST SCORE: Grade <b>'+b.grade+'</b> · '+(b.win?'🏆 VICTORY':'💀 DEFEAT')+' · '+String(b.diff||'').toUpperCase()+' · 💥 '+b.dealt+' dmg';
+  if(b&&$('bestLine')) $('bestLine').innerHTML='BEST SCORE: Grade <b>'+b.grade+'</b> · '+(b.win?'VICTORY':'DEFEAT')+' · '+String(b.diff||'').toUpperCase()+' · '+b.dealt+' dmg';
 }catch(e){} })();
 requestAnimationFrame(loop);
 </script>
