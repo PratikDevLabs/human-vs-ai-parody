@@ -177,6 +177,21 @@ a{color:inherit;text-decoration:none}
 #bChai.ready .ic{filter:none;animation:steam 1s infinite}
 @keyframes chaiPulse{from{box-shadow:0 0 18px rgba(249,115,22,.55),0 0 40px rgba(239,68,68,.25)}to{box-shadow:0 0 34px rgba(249,115,22,.95),0 0 74px rgba(239,68,68,.55)}}
 @keyframes steam{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-3px) rotate(3deg)}}
+/* intense fiery ember particles while the Brahmastra is charged */
+#bChai.ready::before,#bChai.ready::after,
+#bChai.ready .core::before,#bChai.ready .core::after{
+  content:'';position:absolute;bottom:14%;width:6px;height:6px;border-radius:50%;pointer-events:none;
+  background:#facc15;box-shadow:0 0 9px 3px rgba(250,204,21,.85),0 0 18px 6px rgba(249,115,22,.4);
+  animation:ember 0.85s ease-in infinite;opacity:0}
+#bChai.ready::after{--ex:16px;animation-delay:.28s;background:#f97316;box-shadow:0 0 8px 3px rgba(249,115,22,.85),0 0 16px 5px rgba(239,68,68,.4)}
+#bChai.ready .core::before{--ex:-14px;animation-delay:.5s;width:5px;height:5px;background:#ef4444;box-shadow:0 0 8px 2px rgba(239,68,68,.9)}
+#bChai.ready .core::after{--ex:6px;animation-delay:.68s;width:4px;height:4px;background:#fde68a;box-shadow:0 0 7px 2px rgba(253,230,138,.9)}
+#bChai.ready .core{overflow:visible}
+@keyframes ember{
+  0%{transform:translate(0,0) scale(.6);opacity:0}
+  12%{opacity:1}
+  55%{opacity:.9}
+  100%{transform:translate(var(--ex,0px),-86px) scale(1.15);opacity:0}}
 #chaiPct{font-family:'Orbitron';font-size:11px;font-weight:800;color:#fdba74;letter-spacing:1px;text-shadow:0 0 10px rgba(249,115,22,.6)}
 #chaiPct.ready{color:#fde68a;animation:blink .35s infinite alternate}
 
@@ -400,7 +415,8 @@ kbd{background:#171b3d;border:1px solid var(--stroke);border-bottom-width:2.5px;
           <button class="tgl" id="menuMusic">🎵 Music: ON</button>
         </div>
       </div>
-      <p class="credit">Made with ☕ &amp; attitude · Follow the dev 👉 <a href="https://www.instagram.com/demon_tanjiro_820/" target="_blank" rel="noopener">@demon_tanjiro_820</a> on Instagram</p>
+      <p class="credit">Made with ☕ &amp; attitude · Follow the dev 👉 <a href="https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==" target="_blank" rel="noopener">@pratik_roy_820</a> on Instagram</p>
+      <p class="credit" id="bestLine" style="margin-top:5px;color:#fde68a"></p>
       <p id="soundNote">🔊 Best experience: sound ON. Grok, ChatGPT &amp; Claude live voice mein roast karenge (Web Speech API).</p>
     </div>
   </div>
@@ -449,8 +465,8 @@ kbd{background:#171b3d;border:1px solid var(--stroke);border-bottom-width:2.5px;
       <div class="viral">
         <h4>😤 AI SE BADLA PURA NAHI HUA?</h4>
         <p>Apni scorecard wali bhadaas Instagram par nikalo — dev ko follow karo, score bhejo, aur next update mein apna naam chamkao! 🏆</p>
-        <a class="btn insta" href="https://www.instagram.com/demon_tanjiro_820/" target="_blank" rel="noopener">📸 भड़ास निकालो - Instagram पर फॉलो करो!</a>
-        <p style="margin:10px 0 0;font-size:12px">@demon_tanjiro_820 · Human vs AI — Overlord Arena</p>
+        <a class="btn insta" href="https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==" target="_blank" rel="noopener">📸 भड़ास निकालो - Instagram पर फॉलो करो!</a>
+        <p style="margin:10px 0 0;font-size:12px">@pratik_roy_820 · Human vs AI — Overlord Arena</p>
       </div>
     </div>
   </div>
@@ -1643,7 +1659,7 @@ $('btnFull').addEventListener('click',()=>{
 });
 $('btnShare').addEventListener('click',async()=>{
   const g=gradeFor(result?result.win:false);
-  const txt=`🥊 HUMAN vs AI — Overlord Arena\n${result&&result.win?'🏆 JEET GAYA!':'💀 Haar gaya (is baar)'}\n⭐ Grade: ${g[0]} — ${g[1]}\n💥 Damage: ${stats.dealt} · 🔥 Max Combo: ×${stats.maxCombo} · ☕ Chai Ults: ${stats.chaiUsed}\nTum try karo, aur score yahan bhejo 👉 https://www.instagram.com/demon_tanjiro_820/`;
+  const txt=`🥊 HUMAN vs AI — Overlord Arena\n${result&&result.win?'🏆 JEET GAYA!':'💀 Haar gaya (is baar)'}\n⭐ Grade: ${g[0]} — ${g[1]}\n💥 Damage: ${stats.dealt} · 🔥 Max Combo: ×${stats.maxCombo} · ☕ Chai Ults: ${stats.chaiUsed}\nTum try karo, aur score yahan bhejo 👉 https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==`;
   try{
     if(navigator.share){await navigator.share({title:'Human vs AI — Overlord Arena',text:txt});}
     else{await navigator.clipboard.writeText(txt); toast('📤','Score Copy Ho Gaya!','Instagram pe paste karke flex karo!',null,'you');}
@@ -1670,6 +1686,10 @@ document.addEventListener('visibilitychange',()=>{ if(document.hidden&&gameState
 
 /* ---------------- Boot ---------------- */
 resize(); resetFighters(); refreshToggles();
+(function(){ try{
+  const b=JSON.parse(localStorage.getItem('hva_best')||'null');
+  if(b&&$('bestLine')) $('bestLine').innerHTML='🏅 BEST SCORE: Grade <b>'+b.grade+'</b> · '+(b.win?'🏆 VICTORY':'💀 DEFEAT')+' · '+String(b.diff||'').toUpperCase()+' · 💥 '+b.dealt+' dmg';
+}catch(e){} })();
 requestAnimationFrame(loop);
 </script>
 </body>

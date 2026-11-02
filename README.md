@@ -4,7 +4,7 @@
 
 A neon-cyberpunk 2.5D arcade brawler where you fight **Grok** (psycho roaster), **ChatGPT** (essay bomber) and **Claude** (code-matrix) — all at once. They talk. They roast. Their words literally drain your HP. Your only Brahmastra? A steaming cup of **Gujarati Chai**.
 
-> 📸 Follow the dev: **[@demon_tanjiro_820](https://www.instagram.com/demon_tanjiro_820/)** — *भड़ास निकालो - Instagram पर फॉलो करो!*
+> 📸 Follow the dev: **[@pratik_roy_820](https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==)** — *भड़ास निकालो - Instagram पर फॉलो करो!*
 
 ## ▶️ Play instantly
 
