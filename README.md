@@ -34,11 +34,12 @@ Works on desktop + mobile touchscreens. 🔊 **Sound ON recommended** — the AI
 
 ## ⚔️ Combat design
 
-- **No button-mashing:** real hitboxes, attack cooldowns and a stamina system — distance + timing decide everything. Punch = fast, single-target. Kick = slow, sweeps the whole arc, and **interrupts AI casts**.
-- **Signature AI powers on every difficulty:**
-  - 😈 **Grok — Roast Wave:** psychological damage, drains HP **and** stamina, with live voice roasts (*"Bhai main toh nahi sehta!"*)
-  - 🤖 **ChatGPT — Essay Block Drop:** telegraphed 10-page essay blocks rain from the sky
-  - 🧠 **Claude — Code Burst Matrix:** volleys of `</>` projectiles (they home in on Hard!)
+- **No button-mashing:** real hitboxes, attack cooldowns and a stamina system — fighters **physically lunge toward each other and collide** (body pushback), punches/kicks land only on **direct body contact** with impact sparks, and floating `-25 HP` damage numbers pop on every hit. Punch = fast, single-target. Kick = slow, sweeps the whole arc, and **interrupts AI casts**.
+- **Cinematic ultimates with letterbox slow-mo (every difficulty):**
+  - ☕ **You — Gujarati Chai Brahmastra:** the human literally **lifts off the ground** with glowing particles, **levitates mid-air sipping a steaming cup of chai**, then unleashes an **earth-shattering shockwave that hits all 3 AIs simultaneously** (screen shake, ground cracks, they get launched).
+  - 😈 **Grok — Psychological Roast Wave:** expanding rings of toxic roast glyphs, red screen tint, HP **and** stamina + mind damage — with live voice roasts (*"Bhai main toh nahi sehta!"*, *"Khel khatam beta, ab ghar ja!"*)
+  - 🤖 **ChatGPT — Massive 10-Page Essay Block:** one giant telegraphed essay block ("YOU LOSE" stamp) crashes down with debris and a huge shockwave (*"Beta, tumse na ho payega, logic padh lo pehle."*)
+  - 🧠 **Claude — Matrix Laser Stream:** a screen-shaking, jagged laser beam fired from his visor straight into you with matrix-glyph rain and tick damage (*"Oops! Syntax error in your life choices."*)
 - **Smart AI brains:** surround slotting, melee-attack tokens (no cheap 3-on-1 stunlocks), reactive dodges, blocking, cast interruptions, low-HP retreats.
 - **☕ Gujarati Chai Brahmastra:** charges as you deal/take damage. At 100% the button burns — unleash a full-screen cinematic blast that heals you, refills stamina and smashes all three overlords at once.
 - **Difficulties:** 🌱 Easy (slower AI, fast chai) · ⚔️ Medium (the real fight) · 💀 Hard (simultaneous powers, homing code, brutal damage).
@@ -47,12 +48,14 @@ Works on desktop + mobile touchscreens. 🔊 **Sound ON recommended** — the AI
 
 Everything is synthesized live in the browser:
 
+The engine explicitly **locks onto a deep, heavy male Hindi / Indian-English voice** (`hi-IN` → `en-IN` → any male-branded voice → deep-pitched fallback, pitch ≤ 0.55) so it never sounds like the robotic female default. All roasts are aggressive Hinglish:
+
 | Character | Voice profile |
 |---|---|
-| Grok | pitch `0.8`, rate `1.1`, hi-IN — sarcastic desi roasts |
-| ChatGPT | pitch `1.0` — analytical "Certainly!" energy |
-| Claude | pitch `1.2` — polite corporate menace |
-| You | chai-powered Hindi one-liners |
+| Grok | `hi-IN`, pitch `0.55` — *"Bhai main toh nahi sehta!"* / *"Khel khatam beta, ab ghar ja!"* |
+| ChatGPT | `hi-IN`, pitch `0.65` — *"Beta, tumse na ho payega, logic padh lo pehle."* |
+| Claude | `hi-IN`, pitch `0.75` — *"Oops! Syntax error in your life choices."* |
+| You | `hi-IN`, pitch `0.85` — chai-powered one-liners |
 
 SFX (punches, explosions, the chai blast) and the synthwave loop are generated with the Web Audio API. Speech bubbles + floating `-15 HP: Grok Roasted You!` glass toasts keep every hit readable.
 
