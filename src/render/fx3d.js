@@ -271,6 +271,33 @@ export class FX3D {
       this.cracks.push({ m, life: 0 });
     }
 
+    // --- matrix rain columns (claude ult backdrop) ---
+    const MR = 320;
+    const mg = new THREE.BufferGeometry();
+    this.matrixPos = new Float32Array(MR * 3);
+    for (let i = 0; i < MR; i++) {
+      this.matrixPos[i * 3] = (Math.random() - 0.5) * 30;
+      this.matrixPos[i * 3 + 1] = Math.random() * 10;
+      this.matrixPos[i * 3 + 2] = -6 - Math.random() * 8;
+    }
+    mg.setAttribute('position', new THREE.BufferAttribute(this.matrixPos, 3));
+    this.matrixRain = new THREE.Points(mg, new THREE.PointsMaterial({
+      color: 0xFF8A2B, size: 0.07, transparent: true, opacity: 0,
+      blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+    }));
+    this.matrixRain.frustumCulled = false;
+    scene.add(this.matrixRain);
+
+    // --- debug hitbox rings (?debug=1) ---
+    this.debugRings = [];
+    for (let i = 0; i < 10; i++) {
+      const m = new THREE.Mesh(new THREE.RingGeometry(0.92, 1, 28),
+        new THREE.MeshBasicMaterial({ color: 0x00ff88, transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide }));
+      m.visible = false;
+      scene.add(m);
+      this.debugRings.push(m);
+    }
+
     // --- floor light pools + reflection streaks per fighter ---
     this.poolTex = poolTexture();
     this.pools = {};
@@ -650,6 +677,45 @@ export class FX3D {
         if (c.life <= 0) c.m.visible = false;
       }
     }
+
+    // matrix rain during claude ult (accelerates in execute)
+    const mrOn = !!(claudeUlt && (u.phase === 'ascend' || u.phase === 'compile' || u.phase === 'execute'));
+    this.matrixRain.material.opacity += ((mrOn ? 0.85 : 0) - this.matrixRain.material.opacity) * Math.min(1, dt * 4);
+    if (this.matrixRain.material.opacity > 0.02) {
+      const spd = mrOn ? (u.phase === 'execute' ? 9 : 4.5) : 2;
+      for (let i = 0; i < this.matrixPos.length; i += 3) {
+        this.matrixPos[i + 1] -= dt * spd;
+        if (this.matrixPos[i + 1] < 0) { this.matrixPos[i + 1] = 10; this.matrixPos[i] = (Math.random() - 0.5) * 30; }
+      }
+      this.matrixRain.geometry.attributes.position.needsUpdate = true;
+    }
+
+    // debug hitboxes: body ring + limb hit ring while attacking
+    let di = 0;
+    if (typeof window !== 'undefined' && window.__DEBUG) {
+      for (const f of sim.fighters) {
+        if (!f.alive || di >= this.debugRings.length) continue;
+        // body box
+        const body = this.debugRings[di++];
+        body.visible = true;
+        body.material.color.set(0x00ff88);
+        body.position.set(f.x, 0.03, f.z);
+        body.rotation.x = -Math.PI / 2;
+        body.scale.set(f.radius * 2, f.radius * 2, 1);
+        if (f.atk && di < this.debugRings.length) {
+          const spec = f.atk.spec;
+          const reach = (spec.reach || 1) * (f.height / 1.8);
+          const limb = this.debugRings[di++];
+          limb.visible = true;
+          limb.material.color.set(f.color);
+          limb.position.set(f.x + f.face * reach, f.y + f.height * 0.62, f.z);
+          limb.rotation.x = 0;
+          const rr = 0.55 + f.radius;
+          limb.scale.set(rr, rr, 1);
+        }
+      }
+    }
+    for (; di < this.debugRings.length; di++) this.debugRings[di].visible = false;
 
     // fighter floor pools / streaks
     for (const f of sim.fighters) {

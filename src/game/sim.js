@@ -73,7 +73,7 @@ export function resetMatch(diffKey) {
       hp: maxHp, maxHp,
       stam: 100,
       alive: true, state: 'idle', stateT: 0, walkPhase: Math.random() * 6,
-      atk: null, atkCd: { punch: 0, kick: 0 },
+      atk: null, atkCd: { punch: 0, kick: 0 }, chain: 0, chainT: 0,
       dodgeT: 0, dodgeAge: 0, dodgeCd: 0,
       stunT: 0, hurtT: 0, flashT: 0, graceT: 0, cast: null,
       specialCd: 2.5 + Math.random() * 3, ultCd: (D.ultCd[0] + Math.random() * (D.ultCd[1] - D.ultCd[0])),
@@ -118,10 +118,18 @@ function spendStam(f, n) {
 
 export function startAttack(f, type) {
   if (!f.alive || f.stunT > 0 || f.hurtT > 0.05 || f.state === 'cast' || f.state === 'ult' || f.state === 'ko') return false;
-  const spec = f.base[type];
+  let spec = f.base[type];
+  let variant = 0;
+  if (f.isPlayer && type === 'punch') {
+    // 3-hit string: jab -> cross -> hook, cycles while the chain window is open
+    variant = f.chain || 0;
+    spec = COMBAT.punchString[variant];
+    f.chain = (variant + 1) % COMBAT.punchString.length;
+    f.chainT = COMBAT.chainWindow;
+  }
   if (f.atkCd[type] > 0) return false;
   if (!spendStam(f, spec.stam)) { bus.emit('ui:denied', type); return false; }
-  f.atk = { type, t: 0, dur: spec.dur, hitDone: false, spec };
+  f.atk = { type, t: 0, dur: spec.dur, hitDone: false, spec, variant };
   f.atkCd[type] = spec.cd;
   f.state = 'attack';
   f.face = f.isPlayer ? (nearestEnemy(f) ? Math.sign(nearestEnemy(f).x - f.x) || f.face : f.face) : (sim.player.alive ? Math.sign(sim.player.x - f.x) || f.face : f.face);
@@ -410,8 +418,11 @@ export function stepSim(dt) {
   if (sim.hitstopT > 0) { sim.hitstopT -= dt; return; }
   // slow-mo time scale
   let sdt = dt;
-  if (sim.slowmoT > 0) { sim.slowmoT -= dt; sdt = dt * COMBAT.perfectSlowmoScale; sim.timeScale = COMBAT.perfectSlowmoScale; }
-  else sim.timeScale = 1;
+  let ts = 1;
+  if (sim.slowmoT > 0) { sim.slowmoT -= dt; ts = COMBAT.perfectSlowmoScale; }
+  if (sim.ult) ts = Math.min(ts, COMBAT.ultTimeScale[sim.ult.key] || 0.6); // cinematic slow-mo during ults
+  sdt = dt * ts;
+  sim.timeScale = ts;
 
   sim.time += sdt;
   sim.timeLeft -= sdt;
@@ -445,7 +456,7 @@ export function stepSim(dt) {
   stepZones(sdt);
   stepWaves(sdt);
   stepSlabs(sdt);
-  if (sim.ult) stepUlt(sim, sdt);
+  if (sim.ult) stepUlt(sim, dt); // ult timeline runs in real time while the world is slowed
 
   // combo decay
   if (sim.comboT > 0) { sim.comboT -= sdt; if (sim.comboT <= 0) sim.combo = 0; }
@@ -460,13 +471,19 @@ function stepAmbient(dt) {
   for (const f of sim.fighters) {
     f.hurtT = Math.max(0, f.hurtT - dt); f.flashT = Math.max(0, f.flashT - dt); f.stunT = Math.max(0, f.stunT - dt);
     if (!f.alive) { f.koT += dt; f.vy -= COMBAT.gravity * dt; f.y = Math.max(0, f.y + f.vy * dt); f.x += f.vx * dt; f.vx *= 0.98; }
-    else { f.y = Math.max(0, f.y); if (f.y === 0) { f.vy = 0; f.onGround = true; } f.walkPhase += dt * 2; }
+    else {
+      f.y = Math.max(0, f.y); if (f.y === 0) { f.vy = 0; f.onGround = true; }
+      f.walkPhase += dt * 2;
+      if (sim.result && sim.result.win && f.isPlayer && f.alive) f.state = 'victory';
+      else if (f.state === 'victory') f.state = 'idle';
+    }
   }
 }
 
 function stepFighter(f, dt) {
   // timers
   f.atkCd.punch -= dt; f.atkCd.kick -= dt; f.dodgeCd -= dt; f.specialCd -= dt; f.ultCd -= dt;
+  if (f.chainT > 0) { f.chainT -= dt; if (f.chainT <= 0) f.chain = 0; }
   f.hurtT -= dt; f.stunT -= dt; f.flashT -= dt; f.graceT -= dt;
   f.stateT += dt;
   if (f.dodgeT > 0) {

@@ -161,6 +161,13 @@ Object.assign(UI.en, {
   quality_auto: 'AUTO', quality_low: 'LOW', quality_med: 'MEDIUM', quality_high: 'HIGH',
   lang_en: 'English', lang_hinglish: 'Hinglish', lang_hi: 'Hindi',
   on: 'ON', off: 'OFF',
+  ultPreview: 'ULT PREVIEW', selFighter: 'TAP TO INSPECT',
+  ctrlCard: 'CONTROLS', ctrlTouch: 'Mobile: left thumb = joystick (dynamic), right thumb = action buttons. Multitouch supported.',
+  ctrlKeys: 'MOVE A/D · PUNCH J · KICK X · JUMP SPACE/W · DODGE S/L · CHAI ULT C · PAUSE P · FULLSCREEN F',
+  bio_grok: 'Lean roast-engine. Fast feints, faster insults. Ult: ROAST WAVE.',
+  bio_chatgpt: 'Heavyweight essay bomber. Slow, huge hits. Ult: ESSAY DROP.',
+  bio_claude: 'Tall precise striker. Long reach code jabs. Ult: CODE MATRIX.',
+  movesLbl: 'MOVES', punchDesc: '3-hit string: jab - cross - hook', kickDesc: 'Slow heavy sweep, interrupts casts',
 });
 Object.assign(UI.hinglish, {
   menuTitle: 'HUMAN vs AI', menuTag: 'OVERLORD ARENA — NEO-DELHI 2099',
@@ -195,6 +202,13 @@ Object.assign(UI.hinglish, {
   quality_auto: 'AUTO', quality_low: 'LOW', quality_med: 'MEDIUM', quality_high: 'HIGH',
   lang_en: 'English', lang_hinglish: 'Hinglish', lang_hi: 'Hindi',
   on: 'ON', off: 'OFF',
+  ultPreview: 'ULT DEKHO', selFighter: 'Dekhne ke liye tap karo',
+  ctrlCard: 'CONTROLS', ctrlTouch: 'Mobile: left thumb = joystick (dynamic), right thumb = action buttons. Multitouch chalta hai.',
+  ctrlKeys: 'HILNA A/D · GHUSA J · LATH X · KUDNA SPACE/W · DODGE S/L · CHAI ULT C · PAUSE P · FULLSCREEN F',
+  bio_grok: 'Lean roast-engine. Tez feints, aur tez insult. Ult: ROAST WAVE.',
+  bio_chatgpt: 'Bhaari essay bomber. Dheela, bada hit. Ult: ESSAY DROP.',
+  bio_claude: 'Lamba sakht striker. Lambi reach code jab. Ult: CODE MATRIX.',
+  movesLbl: 'MOVES', punchDesc: '3-hit string: jab - cross - hook', kickDesc: 'Dheela bhaari sweep, cast tod deta hai',
 });
 
 export function t(lang, key) {

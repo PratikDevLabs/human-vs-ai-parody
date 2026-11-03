@@ -36,13 +36,15 @@
 <body data-screen="loading">
 <canvas id="gameCanvas"></canvas>
 <div id="vignetteFx"></div>
+<div id="dimFx"></div>
+<div id="letterbox"><div class="lb bar top"></div><div class="lb bar bot"></div></div>
 
 <!-- ===================== HUD ===================== -->
 <div id="hud" class="hidden">
   <div id="topbar">
+    <div id="scoreWrap"><span id="scoreNum">0</span></div>
     <div id="timer">3:00</div>
     <div id="comboWrap" class="hidden"><span id="comboNum">0</span><span class="comboLbl" data-k="combo">COMBO</span></div>
-    <div id="scoreWrap"><span id="scoreNum">0</span></div>
     <div class="topBtns">
       <button id="btnSound" class="tbtn" aria-label="sound"></button>
       <button id="btnFull" class="tbtn" aria-label="fullscreen"></button>

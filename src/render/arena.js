@@ -261,6 +261,26 @@ export function buildArena(scene) {
       mid.add(m); boards.push(m);
     }
     mid.userData.boards = boards;
+    // volumetric-looking light shafts
+    const shaftTex = makeCanvas(64, 256, (g, w, h) => {
+      const gr = g.createLinearGradient(0, 0, 0, h);
+      gr.addColorStop(0, 'rgba(160,190,255,0.35)');
+      gr.addColorStop(1, 'rgba(160,190,255,0)');
+      g.fillStyle = gr; g.fillRect(0, 0, w, h);
+      const gr2 = g.createLinearGradient(0, 0, w, 0);
+      gr2.addColorStop(0, 'rgba(0,0,0,1)'); gr2.addColorStop(0.5, 'rgba(0,0,0,0)'); gr2.addColorStop(1, 'rgba(0,0,0,1)');
+      g.globalCompositeOperation = 'destination-out';
+      g.fillStyle = gr2; g.fillRect(0, 0, w, h);
+    });
+    const shafts = [];
+    for (let i = 0; i < 4; i++) {
+      const sh = new THREE.Mesh(new THREE.PlaneGeometry(rand(1.2, 2.4), rand(10, 16)),
+        new THREE.MeshBasicMaterial({ map: shaftTex, transparent: true, opacity: 0.16, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false }));
+      sh.position.set(-24 + i * 15 + rand(-3, 3), 8, rand(-1, 1));
+      sh.rotation.z = 0.28 + rand(-0.06, 0.06);
+      mid.add(sh); shafts.push(sh);
+    }
+    mid.userData.shafts = shafts;
     // hanging power lines between building tops
     const lineMat = new THREE.LineBasicMaterial({ color: 0x05040c, transparent: true, opacity: 0.9 });
     for (let i = 0; i < 7; i++) {
@@ -317,6 +337,21 @@ export function buildArena(scene) {
       w.rotation.x = Math.PI / 2; w.position.set(wx, 0.28, 0.55); auto.add(w);
       const w2 = w.clone(); w2.position.z = -0.55; auto.add(w2);
     }
+    // light rain streaks
+    const RN = 240;
+    const rg = new THREE.BufferGeometry();
+    const rpos = new Float32Array(RN * 3);
+    for (let i = 0; i < RN; i++) {
+      rpos[i * 3] = rand(-24, 24); rpos[i * 3 + 1] = rand(0, 12); rpos[i * 3 + 2] = rand(-2, 6);
+    }
+    rg.setAttribute('position', new THREE.BufferAttribute(rpos, 3));
+    const rain = new THREE.Points(rg, new THREE.PointsMaterial({
+      color: 0x9db8ff, size: 0.05, transparent: true, opacity: 0.4,
+      blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+    }));
+    rain.frustumCulled = false;
+    near.add(rain);
+    near.userData.rain = rain;
     // tube lights (flicker)
     near.userData.tubes = [];
     for (let i = 0; i < 4; i++) {
@@ -382,6 +417,23 @@ export function buildArena(scene) {
     for (let i = 0; i < fogs.length; i++) {
       fogs[i].position.x -= dt * (0.5 + i * 0.2);
       if (fogs[i].position.x < -30) fogs[i].position.x = 30;
+    }
+    // light shafts sway
+    const shafts = mid.userData.shafts;
+    if (shafts) for (let i = 0; i < shafts.length; i++) {
+      shafts[i].material.opacity = 0.11 + Math.sin(t * 0.5 + i * 1.7) * 0.06;
+      shafts[i].rotation.z = 0.28 + Math.sin(t * 0.23 + i) * 0.05;
+    }
+    // rain
+    const rain = near.userData.rain;
+    if (rain) {
+      const rp = rain.geometry.attributes.position.array;
+      for (let i = 0; i < rp.length; i += 3) {
+        rp[i + 1] -= dt * 16;
+        rp[i] -= dt * 2.2; // slant
+        if (rp[i + 1] < 0) { rp[i + 1] = 12; rp[i] = rand(-24, 24); }
+      }
+      rain.geometry.attributes.position.needsUpdate = true;
     }
     // billboard flicker
     const boards = mid.userData.boards;

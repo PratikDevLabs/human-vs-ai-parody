@@ -170,7 +170,7 @@ export class HUD {
     this.el.pHpFill.style.width = (hpPct * 100) + '%';
     this._trail += (hpPct - this._trail) * Math.min(1, dt * 1.4);
     this.el.pHpTrail.style.width = (clamp(this._trail, 0, 1) * 100) + '%';
-    this.el.pHpNum.textContent = Math.ceil(p.hp);
+    this.el.pHpNum.textContent = Math.ceil(p.hp) + ' / ' + p.maxHp;
     this.el.pHpFill.classList.toggle('low', hpPct < 0.3);
     this.el.lowHpFx.classList.toggle('on', hpPct < 0.3 && p.alive);
     // stamina
