@@ -14,6 +14,7 @@ import { quality } from './core/quality.js';
 import { t } from './data/dialogue.js';
 import { resetMatch, stepSim, sim, setAxis, press, livingAIs } from './game/sim.js';
 import { updateAI } from './game/ai.js';
+import { startUlt } from './game/ults.js';
 import { Renderer3D, webglAvailable } from './render/renderer3d.js';
 import { Renderer2D } from './render/canvas2d.js';
 import { buildArena } from './render/arena.js';
@@ -39,6 +40,9 @@ let appState = 'BOOT'; // BOOT MENU VS COUNTDOWN FIGHT RESULT
 let resultAt = 0, chaiReadyAnnounced = false;
 let wakeLock = null;
 let deferredPrompt = null;
+let menuFocus = null;        // selected fighter id in menu turntable
+let menuRot = 0, menuRotTarget = 0;
+let menuUltActive = false;
 
 // ---------------- boot ----------------
 async function boot() {
@@ -59,6 +63,12 @@ async function boot() {
       onInstall: () => { if (deferredPrompt) { deferredPrompt.prompt(); } },
       onShare: () => shareResult(),
       onSettings: () => applySettings(),
+      onSelectFighter: (id) => {
+        menuFocus = id;
+        const i = ['grok', 'chatgpt', 'claude'].indexOf(id);
+        menuRotTarget = -i * (Math.PI * 2 / 3);
+      },
+      onPreviewUlt: (id) => previewUlt(id),
       onSkipVS: () => { clearTimeout(startMatch._t); if (appState === 'VS') { sim.state = 'countdown'; appState = 'COUNTDOWN'; controls.setEnabled(true); acquireWakeLock(); if (!tutorial.startIfNeeded()) screens.toast(tr('mission')); } },
     },
   });
@@ -169,8 +179,22 @@ function forceTutorial() {
 }
 
 // ---------------- state machine ----------------
+function previewUlt(id) {
+  if (menuUltActive || appState !== 'MENU') return;
+  menuUltActive = true;
+  resetMatch(sim.diffKey || 'medium');
+  sim.state = 'fight';
+  sim.timeLeft = 999;
+  // spread the cast for the camera
+  sim.byId.you.x = -4.6; sim.byId.grok.x = 2.2; sim.byId.chatgpt.x = 4.6; sim.byId.claude.x = 6.8;
+  if (rigs) rigs.rigs.you.root.visible = true;
+  hud.hide();
+  try { startUlt(sim, sim.byId[id], id); } catch (e) { console.error(e); menuUltActive = false; }
+}
+
 function toMenu() {
   appState = 'MENU';
+  menuUltActive = false;
   resetMatch(sim.diffKey || 'medium');
   sim.state = 'menu';
   controls.setEnabled(false);
@@ -183,7 +207,9 @@ function toMenu() {
 
 function startMatch(diffKey) {
   stopMusic();
+  menuUltActive = false;
   resetMatch(diffKey);
+  if (rigs) rigs.rigs.you.root.visible = true;
   sim.state = 'vs';
   appState = 'VS';
   chaiReadyAnnounced = false;
@@ -286,6 +312,10 @@ function stopUltVisuals() {
 
 // ---------------- global bindings ----------------
 function bindGlobal() {
+  window.__DEBUG = DEBUG;
+  document.addEventListener('contextmenu', (e) => e.preventDefault()); // block long-press menus
+  bus.on('ult:start', () => document.body.classList.add('cine'));
+  bus.on('ult:end', () => document.body.classList.remove('cine'));
   $('btnFull').innerHTML = icon('full');
   $('btnUlt').addEventListener('pointerdown', (e) => {
     e.preventDefault();
@@ -358,8 +388,8 @@ function loop(now) {
   }
   quality.tick(dt);
 
-  // fixed-step sim
-  if (!paused && (appState === 'COUNTDOWN' || appState === 'FIGHT' || appState === 'RESULT')) {
+  // fixed-step sim (menu ult preview steps the sim too, so the ult plays out live)
+  if (!paused && (appState === 'COUNTDOWN' || appState === 'FIGHT' || appState === 'RESULT' || (appState === 'MENU' && sim.ult))) {
     if (appState === 'FIGHT' || appState === 'COUNTDOWN') {
       setAxis(controls.poll());
       if (Math.abs(controls.poll()) > 0.2) tutorial.onMove();
@@ -367,7 +397,7 @@ function loop(now) {
     acc += dt;
     let n = 0;
     while (acc >= SIM_DT && n < 5) {
-      if (appState === 'FIGHT' || appState === 'COUNTDOWN' || appState === 'RESULT') {
+      if (appState === 'FIGHT' || appState === 'COUNTDOWN' || appState === 'RESULT' || (appState === 'MENU' && sim.ult)) {
         stepSim(SIM_DT);
         // AI only in fight
         if (appState === 'FIGHT') for (const f of sim.fighters) if (!f.isPlayer && f.alive) updateAI(sim, f, SIM_DT);
@@ -376,14 +406,39 @@ function loop(now) {
     }
     if (n === 5) acc = 0; // drop backlog after hitches
     onSimStateChange();
+    if (appState === 'MENU' && menuUltActive && !sim.ult) {
+      // ult preview finished -> back to idle menu stage
+      menuUltActive = false;
+      resetMatch(sim.diffKey || 'medium');
+      sim.state = 'menu';
+    }
   }
 
-  // menu background drift
+  // menu background: 3D turntable of the AI fighters + slow dolly
   const t = now / 1000;
-  if (appState === 'MENU' || appState === 'BOOT') {
+  if ((appState === 'MENU' || appState === 'BOOT') && !menuUltActive) {
+    if (rigs) {
+      rigs.rigs.you.root.visible = false;
+      const ids = ['grok', 'chatgpt', 'claude'];
+      // ease rotation offset toward selected fighter
+      let d = menuRotTarget - menuRot;
+      while (d > Math.PI) d -= 2 * Math.PI;
+      while (d < -Math.PI) d += 2 * Math.PI;
+      menuRot += d * Math.min(1, dt * 3);
+      ids.forEach((id, i) => {
+        const f = sim.byId[id];
+        const ang = t * 0.22 + menuRot + i * (Math.PI * 2 / 3);
+        f.x = Math.sin(ang) * 2.8;
+        f.z = Math.cos(ang) * 1.1 - 1.4;
+        f.y = 0;
+        f.face = -Math.sign(f.x) || 1;
+        f.state = 'idle';
+        f.walkPhase = t * 2;
+      });
+    }
     renderer.updateCamera(sim, dt, t);
-    // slow dolly
     renderer.camX += Math.sin(t * 0.1) * dt * 0.4;
+    if (menuFocus && sim.byId[menuFocus]) renderer.camX += (sim.byId[menuFocus].x * 0.45 - renderer.camX) * Math.min(1, dt * 2);
   } else {
     renderer.updateCamera(sim, dt, t);
   }
@@ -414,6 +469,8 @@ function updateDebug(dt) {
     `t ${sim.time.toFixed(1)}s left ${Math.ceil(sim.timeLeft)}`,
     `voice ${voice.debug.mode || '-'}:${voice.debug.voice || '-'}`,
     `ult ${sim.ult ? sim.ult.key + ':' + sim.ult.phase : '-'}`,
+    `ai ${livingAIs().map(f => f.id + ':' + (f.aiMode || '?') + (f.cast ? '/cast' : '') + (f.atk ? '/atk' : '')).join(' ') || '-'}`,
+    `hitboxes ON`,
     `you hp ${Math.round(sim.player.hp)} chai ${Math.round(sim.player.chai)}`,
   ].join('<br>');
 }

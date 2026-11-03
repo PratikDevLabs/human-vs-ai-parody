@@ -132,15 +132,23 @@ export class Renderer3D {
     const center = (minX + maxX) / 2;
     const spread = Math.max(3.5, maxX - minX + 4);
     const targetX = center * 0.55;
-    const targetZ = ARENA.camBaseZ + Math.min(4.5, spread * 0.38);
+    let targetZ = ARENA.camBaseZ + Math.min(4.5, spread * 0.38);
+    // cinematic camera push during ultimates (chai sip / claude ascend)
+    let push = 0, lookUp = 0;
+    const u = sim.ult;
+    if (u && (u.phase === 'lift' || u.phase === 'sip' || u.phase === 'charge')) { push = 2.0; lookUp = 0.8; }
+    else if (u && u.key === 'claude' && (u.phase === 'ascend' || u.phase === 'compile')) { push = 1.4; lookUp = 0.6; }
+    else if (u && u.phase === 'blast') { push = 0.6; }
     this.camX += (targetX - this.camX) * Math.min(1, dt * 3);
-    const cx = this.camX, cz = this.basePos.z + (targetZ - ARENA.camBaseZ);
+    this._push = (this._push || 0) + (push - (this._push || 0)) * Math.min(1, dt * 2.5);
+    this._lookUp = (this._lookUp || 0) + (lookUp - (this._lookUp || 0)) * Math.min(1, dt * 2.5);
+    const cx = this.camX, cz = this.basePos.z + (targetZ - ARENA.camBaseZ) - this._push;
     this.shakeAmt = Math.max(0, this.shakeAmt - dt * 2.2);
     const s = this.shakeAmt * 0.12 + (sim.shake || 0) * 0.10;
     const shx = s > 0 ? (Math.random() - 0.5) * s : 0;
     const shy = s > 0 ? (Math.random() - 0.5) * s * 0.7 : 0;
-    this.camera.position.set(cx + shx, ARENA.camY + shy, cz);
-    this.look.set(cx * 0.85, ARENA.lookY, 0);
+    this.camera.position.set(cx + shx, ARENA.camY + shy + this._lookUp * 0.4, cz);
+    this.look.set(cx * 0.85, ARENA.lookY + this._lookUp, 0);
     this.camera.lookAt(this.look);
   }
 

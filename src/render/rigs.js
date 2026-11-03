@@ -254,14 +254,18 @@ export class RigManager {
         rig.torso.rotation.x = -0.15 - p * 0.1;
       } else if (atk) {
         if (atk.type === 'punch') {
+          const v = atk.variant || 0; // 0 jab, 1 cross, 2 hook
+          const extW = [1.45, 1.7, 1.35][v];   // extension strength
+          const twist = [0.15, 0.55, 0.2][v];  // torso twist
+          const arc = [0, 0, 0.9][v];          // hook arcs upward (rotation.z)
           let ext = 0, wind = 0;
           if (prog < 0.28) wind = prog / 0.28;
           else if (prog < 0.62) ext = Math.sin((prog - 0.28) / 0.34 * Math.PI);
           else ext = 1 - (prog - 0.62) / 0.38;
-          setArm(rig.arms.R, -wind * 0.9 - ext * 1.65, -0.1);
+          setArm(rig.arms.R, -wind * 0.9 - ext * extW, -0.1 + ext * arc);
           rig.arms.R.userData.elbow.rotation.x = -wind * 1.2 + ext * 0.15;
           rig.torso.rotation.x = wind * 0.1 + ext * 0.3;
-          rig.torso.rotation.y = -ext * 0.25;
+          rig.torso.rotation.y = -ext * twist;
           setArm(rig.arms.L, -0.3, 0.35);
         } else {
           // kick
@@ -277,6 +281,13 @@ export class RigManager {
           setArm(rig.arms.R, -0.8 * ext, -0.7);
         }
         body.position.y = Math.abs(Math.sin(f.walkPhase)) * 0.03;
+      } else if (f.state === 'victory') {
+        const b = Math.abs(Math.sin(t * 5 + rig.phase));
+        setArm(rig.arms.L, -2.9, 0.55); setArm(rig.arms.R, -2.9, -0.55);
+        rig.arms.L.userData.elbow.rotation.x = -0.3;
+        rig.arms.R.userData.elbow.rotation.x = -0.3;
+        rig.torso.rotation.x = -0.18;
+        body.position.y = b * 0.12;
       } else if (f.state === 'dodge') {
         body.rotation.x = -0.55;
         body.position.y = 0.05;

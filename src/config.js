@@ -68,6 +68,14 @@ export const COMBAT = {
   chaiGainHit: 3.2, chaiGainTaken: 1.1, chaiGainPerfect: 10, chaiTrickle: 1.0, // per s
   chaiHealPct: 0.34,
   chaiUltDmg: 34,
+  // player 3-hit punch string: jab -> cross -> hook (cycles while chainT alive)
+  punchString: [
+    { dmg: 7,  dur: 0.26, cd: 0.30, reach: 1.00, stam: 8,  hitstop: 0.05, knock: 1.8, anim: 'jab' },
+    { dmg: 10, dur: 0.32, cd: 0.36, reach: 1.06, stam: 10, hitstop: 0.07, knock: 2.4, anim: 'cross' },
+    { dmg: 15, dur: 0.44, cd: 0.52, reach: 1.12, stam: 13, hitstop: 0.10, knock: 3.6, anim: 'hook' },
+  ],
+  chainWindow: 0.9,        // s to continue the string
+  ultTimeScale: { chai: 0.5, claude: 0.6, grok: 0.75, chatgpt: 0.75 },
 };
 
 export const DIFFICULTIES = {

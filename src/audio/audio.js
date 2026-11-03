@@ -112,10 +112,12 @@ function noise(t0, dur, peak, dest, filterFreq, type = 'lowpass', q = 1) {
 export const sfx = {
   whiff() { if (!ctx) return; const t = ctx.currentTime; noise(t, 0.12, 0.25, null, 2400, 'bandpass', 1.4); osc('sine', 300, t, 0.1, 0.12, null, 140); },
   punchHit(o) { if (!ctx) return; const t = ctx.currentTime; const h = o && o.heavy;
-    noise(t, h ? 0.22 : 0.14, h ? 0.7 : 0.5, null, h ? 900 : 1400, 'lowpass');
-    osc('sine', h ? 130 : 180, t, h ? 0.2 : 0.12, h ? 0.8 : 0.55, null, 45);
-    osc('square', h ? 90 : 120, t, 0.08, 0.25, null, 40); },
-  hurt() { if (!ctx) return; const t = ctx.currentTime; osc('sawtooth', 220, t, 0.18, 0.3, null, 90); noise(t, 0.15, 0.3, null, 700); },
+    const j = () => 0.88 + Math.random() * 0.24; // randomised variant per hit
+    noise(t, h ? 0.22 : 0.14, h ? 0.7 : 0.5, null, (h ? 900 : 1400) * j(), 'lowpass');
+    osc('sine', (h ? 130 : 180) * j(), t, h ? 0.2 : 0.12, h ? 0.8 : 0.55, null, 45);
+    osc('square', (h ? 90 : 120) * j(), t, 0.08, 0.25, null, 40);
+    osc('triangle', (h ? 65 : 90) * j(), t + 0.01, 0.1, 0.2, null, 30); }, // metallic ring layer
+  hurt() { if (!ctx) return; const t = ctx.currentTime; const j = 0.88 + Math.random() * 0.24; osc('sawtooth', 220 * j, t, 0.18, 0.3, null, 90); noise(t, 0.15, 0.3, null, 700 * j); },
   ko() { if (!ctx) return; const t = ctx.currentTime; osc('sine', 160, t, 0.7, 0.7, null, 30); noise(t, 0.6, 0.5, null, 500); osc('square', 70, t + 0.1, 0.5, 0.3, null, 25); },
   perfect() { if (!ctx) return; const t = ctx.currentTime; osc('sine', 880, t, 0.12, 0.35, null, 1320); osc('sine', 1320, t + 0.08, 0.2, 0.3, null, 1760); noise(t, 0.1, 0.15, null, 6000, 'highpass'); },
   dodge() { if (!ctx) return; const t = ctx.currentTime; noise(t, 0.18, 0.3, null, 3000, 'bandpass', 2); osc('sine', 500, t, 0.15, 0.15, null, 900); },

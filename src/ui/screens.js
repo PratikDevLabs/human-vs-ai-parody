@@ -66,18 +66,33 @@ export class Screens {
     // fighter cards
     const wrap = this.el.fighterCards;
     wrap.innerHTML = '';
+    this._fcardEls = {};
     for (const id of ['grok', 'chatgpt', 'claude']) {
       const f = FIGHTERS[id];
       const card = document.createElement('div');
       card.className = 'fcard';
+      card.dataset.id = id;
       card.style.setProperty('--c', f.color);
       card.innerHTML = `
         <div class="fEmb">${icon('emblem' + id[0].toUpperCase() + id.slice(1))}</div>
         <div class="fName">${f.name}</div>
         <div class="fTitle">${f.title}</div>
+        <div class="fBio">${t(getLang(), 'bio_' + id)}</div>
+        <div class="fMoves">
+          <div class="fMove"><b>${t(getLang(), 'atk_punch')}</b><span>${t(getLang(), 'punchDesc')}</span></div>
+          <div class="fMove"><b>${t(getLang(), 'atk_kick')}</b><span>${t(getLang(), 'kickDesc')}</span></div>
+        </div>
         <div class="fUlt">${icon('bolt')} ${ULTS[id].name}</div>
-        <div class="fHp"><i style="width:${Math.round(f.hp / 220 * 100)}%"></i></div>`;
+        <div class="fHp"><i style="width:${Math.round(f.hp / 220 * 100)}%"></i></div>
+        <button class="mbtn fPrev">${icon('play')} <span>${t(getLang(), 'ultPreview')}</span></button>`;
+      card.onclick = (e) => {
+        if (e.target.closest('.fPrev')) return;
+        this.cbs.onSelectFighter(id);
+        for (const k in this._fcardEls) this._fcardEls[k].classList.toggle('sel', k === id);
+      };
+      card.querySelector('.fPrev').onclick = () => this.cbs.onPreviewUlt(id);
       wrap.appendChild(card);
+      this._fcardEls[id] = card;
     }
     // difficulty segmented
     const seg = this.el.diffSeg;
@@ -207,6 +222,13 @@ export class Screens {
     bs.appendChild(bInp); bs.appendChild(bVal);
     g2.appendChild(bs);
     body.appendChild(g2);
+    // controls card
+    const cc = document.createElement('div');
+    cc.className = 'setGroup ctrlCard';
+    cc.innerHTML = `<div class="setLbl">${tr('ctrlCard')}</div>
+      <div class="ctrlKeys">${tr('ctrlKeys')}</div>
+      <div class="ctrlTouch">${tr('ctrlTouch')}</div>`;
+    body.appendChild(cc);
     // close
     const close = document.createElement('button');
     close.className = 'mbtn wide';
@@ -348,9 +370,15 @@ export class Screens {
     // fighter cards
     const wrap = this.el.fighterCards;
     if (wrap.children.length) {
-      ['grok', 'chatgpt', 'claude'].forEach((id, i) => {
-        wrap.children[i].querySelector('.fName').textContent = t(L, 'name_' + id);
-      });
+      for (const card of wrap.children) {
+        const id = card.dataset.id;
+        card.querySelector('.fName').textContent = t(L, 'name_' + id);
+        card.querySelector('.fBio').textContent = t(L, 'bio_' + id);
+        const mv = card.querySelectorAll('.fMove');
+        if (mv[0]) { mv[0].querySelector('b').textContent = t(L, 'atk_punch'); mv[0].querySelector('span').textContent = t(L, 'punchDesc'); }
+        if (mv[1]) { mv[1].querySelector('b').textContent = t(L, 'atk_kick'); mv[1].querySelector('span').textContent = t(L, 'kickDesc'); }
+        card.querySelector('.fPrev span').textContent = t(L, 'ultPreview');
+      }
     }
   }
 

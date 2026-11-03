@@ -20,7 +20,9 @@ const SPEAKERS = {
   claude:  { name: 'CLAUDE', color: COLORS.claude, pitch: 0.80, rate: 0.88 },  // low soft
 };
 const COOLDOWN = 1.1;
-const FEMALE_HINTS = ['female', 'zira', 'susan', 'samantha', 'karen', 'moira', 'tessa', 'veena', ' Serena', 'samantha'];
+// spec §7: prefer male-suggesting Indian/English names; penalise female-suggesting ones
+const MALE_HINTS = ['madhur', 'prabhat', 'ravi', 'hemant', 'rishi', 'male', 'david', 'daniel', 'alex', 'fred', 'arvind'];
+const FEMALE_HINTS = ['neerja', 'swara', 'heera', 'veena', 'kalpana', 'lekha', 'female', 'zira', 'susan', 'samantha', 'karen', 'moira', 'tessa', 'google हिन्दी'];
 
 export class VoiceDirector {
   constructor() {
@@ -67,13 +69,14 @@ export class VoiceDirector {
       const name = v.name.toLowerCase();
       let s = 0;
       const lang = v.lang.toLowerCase();
-      if (lang.startsWith('hi-in')) s += 100;
-      else if (lang.startsWith('hi')) s += 80;
-      else if (lang.startsWith('en-in')) s += 70;
+      if (lang.startsWith('hi-in')) s += 100;        // hi-IN first
+      else if (lang.startsWith('hi')) s += 85;
+      else if (lang.startsWith('en-in')) s += 75;     // then en-IN
+      else if (lang.startsWith('en-gb') || lang.startsWith('en-us')) s += 45; // then en-GB/en-US (male preferred below)
       else if (lang.startsWith('en')) s += 30;
       else s -= 50;
-      if (FEMALE_HINTS.some(h => name.includes(h.trim().toLowerCase()))) s -= 40; // avoid robotic female default
-      if (/male|david|daniel|alex|fred|arvind|madhur|aditi/.test(name)) s += 10;
+      if (FEMALE_HINTS.some(h => name.includes(h))) s -= 60;  // never the robotic female default
+      if (MALE_HINTS.some(h => name.includes(h))) s += 25;
       if (v.localService) s += 5;
       if (s > bestScore) { bestScore = s; best = v; }
     }
