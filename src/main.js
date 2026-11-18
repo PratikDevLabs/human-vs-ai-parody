@@ -12,7 +12,7 @@ import { storage } from './core/storage.js';
 import { setLang, getLang, tr } from './core/i18n.js';
 import { quality } from './core/quality.js';
 import { t } from './data/dialogue.js';
-import { resetMatch, stepSim, sim, setAxis, press, livingAIs } from './game/sim.js';
+import { resetMatch, stepSim, sim, setAxis, press, livingAIs, forceEnd } from './game/sim.js';
 import { updateAI } from './game/ai.js';
 import { startUlt } from './game/ults.js';
 import { Renderer3D, webglAvailable } from './render/renderer3d.js';
@@ -126,6 +126,7 @@ async function boot() {
     if (fx && fx.ensurePools) fx.ensurePools(sim, def);
     if (DEBUG) console.log('[quality]', tier, JSON.stringify(def));
   });
+  quality.onTier = (tier, def) => { if (rigs && rigs.setQuality) rigs.setQuality(def); };
   quality.setMode(settings.quality || 'auto');
   if (quality.mode === 'auto') quality.apply(); // start HIGH, benchmark will adjust
   else quality.apply();
@@ -224,17 +225,22 @@ function startMatch(diffKey) {
 }
 
 function onSimStateChange() {
-  if (sim.state === 'result' && appState === 'FIGHT') {
-    appState = 'RESULT';
-    resultAt = performance.now();
-    controls.setEnabled(false);
-    releaseWakeLock();
-    setTimeout(() => showResult(), 1400);
-  }
+  try {
+    if (sim.state === 'result' && appState === 'FIGHT') {
+      appState = 'RESULT';
+      resultAt = performance.now();
+      controls.setEnabled(false);
+      releaseWakeLock();
+      setTimeout(() => { try { showResult(); } catch (e) { console.error('[result]', e); screens.showResult(sim.result || { win: false, how: 'ko' }, sim, 0, 'D', storage.getBest(), false); } }, 1400);
+    }
+  } catch (e) { console.error('[state]', e); }
 }
 
 function showResult() {
   if (appState !== 'RESULT') return;
+  try { showResultInner(); } catch (e) { console.error('[showResult]', e); }
+}
+function showResultInner() {
   const win = sim.result.win;
   const hpPct = sim.player.alive ? sim.player.hp / sim.player.maxHp : 0;
   const score = scoreFor(win, sim.stats, hpPct);
@@ -358,6 +364,7 @@ function applySettings() {
   document.body.classList.toggle('leftHanded', !!settings.leftHanded);
   window.__haptics = settings.haptics;
   controls.setButtonSize(Math.round(64 * settings.buttonSize));
+  quality.onTier = (tier, def) => { if (rigs && rigs.setQuality) rigs.setQuality(def); };
   quality.setMode(settings.quality || 'auto');
   voice.subtitlesOn = settings.subtitles !== false;
   voice.enabled = settings.voice > 0.02;
@@ -385,6 +392,16 @@ function loop(now) {
     if (appState === 'FIGHT' || appState === 'COUNTDOWN') {
       setAxis(controls.poll());
       if (Math.abs(controls.poll()) > 0.2) tutorial.onMove();
+      // cooldown rings + stamina state on action buttons
+      const p = sim.player;
+      const cd = (b, left, max) => {
+        const pct = Math.max(0, Math.min(1, 1 - left / max));
+        b.classList.toggle('cool', left > 0);
+        b.style.setProperty('--cd', (pct * 360) + 'deg');
+      };
+      if (controls.btns.punch) cd(controls.btns.punch, p.atkCd.punch, 0.5);
+      if (controls.btns.kick) cd(controls.btns.kick, p.atkCd.kick, 0.6);
+      if (controls.btns.dodge) cd(controls.btns.dodge, p.dodgeCd, 0.85);
     }
     acc += dt;
     let n = 0;
@@ -404,6 +421,11 @@ function loop(now) {
       resetMatch(sim.diffKey || 'medium');
       sim.state = 'menu';
     }
+  }
+
+  // bulletproof game-over watchdog: never freeze at 0 HP — force the end state
+  if (appState === 'FIGHT' && !sim.result) {
+    try { forceEnd(); } catch (e) { console.error('[forceEnd]', e); }
   }
 
   // menu background: 3D turntable of the AI fighters + slow dolly

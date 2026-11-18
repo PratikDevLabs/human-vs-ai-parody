@@ -400,6 +400,12 @@ export class FX3D {
       this.r3d.setCA(0.7);
     });
     bus.on('fx:dodge', (f) => { f._ghostT = 0; });
+    bus.on('fx:swing', (f) => {
+      // erratic glitch sparks on attacks (esp. Grok), at the lead hand
+      if (!this._rigs) return;
+      const hp = this._rigs.handWorld(f, f.atk && f.atk.type === 'kick' ? 'R' : 'R', this._v || (this._v = new THREE.Vector3()));
+      this.burst(hp.x, hp.y, hp.z, f.color, f.id === 'grok' ? 10 : 5, 4, 0.35);
+    });
     bus.on('fx:land', (f) => this.burst(f.x, 0.1, f.z, '#8a93c9', 6, 2, 0.3));
     bus.on('fx:slamwind', (e) => { this.ring(e.x, e.z, e.color, 3.0, 0.45); this.burst(e.x, 0.4, e.z, e.color, 16, 5, 0.5); });
     bus.on('fx:roastHit', (e) => {
@@ -717,17 +723,35 @@ export class FX3D {
     }
     for (; di < this.debugRings.length; di++) this.debugRings[di].visible = false;
 
-    // fighter floor pools / streaks
+    // chai-charged steam from the human's chest core (ult ready cue)
+    if (this.steam) {
+      const p = sim.player;
+      const steaming = p && p.alive && p.chai > 70 && !this.teacup.visible;
+      this.steam.visible = steaming || this.teacup.visible; // cup steam set in the ult block
+      if (steaming && this._rigs) {
+        const rig = this._rigs.rigFor(p);
+        const cp = rig.core.getWorldPosition(this._v || (this._v = new THREE.Vector3()));
+        for (let i = 0; i < 24; i++) {
+          this.steamPos[i * 3] = cp.x + (Math.random() - 0.5) * 0.1;
+          this.steamPos[i * 3 + 1] = cp.y + 0.1 + (i % 8) * 0.045 + Math.sin(t * 7 + i) * 0.02;
+          this.steamPos[i * 3 + 2] = cp.z + (Math.random() - 0.5) * 0.1;
+        }
+        this.steam.geometry.attributes.position.needsUpdate = true;
+        this.steam.material.opacity = 0.25 + (p.chai - 70) / 30 * 0.35;
+      }
+    }
+
+    // fighter floor pools / streaks (mirror-like under-glow)
     for (const f of sim.fighters) {
       const p = this.pools[f.id];
       if (p) {
         p.position.set(f.x, 0.02, f.z);
-        p.material.opacity = 0.14 + (f.flashT > 0 ? f.flashT * 2.2 : 0) + (f.alive ? Math.sin(t * 3 + f.x) * 0.02 : 0);
+        p.material.opacity = 0.2 + (f.flashT > 0 ? f.flashT * 2.6 : 0) + (f.alive ? Math.sin(t * 3 + f.x) * 0.03 : 0);
       }
       const st = this.streaks[f.id];
       if (st) {
         st.position.set(f.x, 0.015, f.z);
-        st.material.opacity = 0.10 + (f.flashT > 0 ? f.flashT * 1.6 : 0);
+        st.material.opacity = 0.17 + (f.flashT > 0 ? f.flashT * 1.8 : 0);
         st.scale.y = 1 + f.y * 0.4;
       }
     }

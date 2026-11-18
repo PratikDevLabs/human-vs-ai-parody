@@ -33,13 +33,18 @@ export class Screens {
     ['screen-loading', 'screen-menu', 'screen-result', 'screen-pause', 'modal-settings',
       'menuTitle', 'menuTag', 'fighterCards', 'diffSeg', 'diffReadout', 'diffLbl', 'btnPlay',
       'btnSettings', 'btnHelp', 'btnInstall', 'statsRow', 'credit', 'loadBar', 'loadPct',
-      'resVerdict', 'resGrade', 'resStats', 'resBest', 'resNewBest',
+      'resVerdict', 'resGrade', 'resStats', 'resBest', 'resNewBest', 'ctaSub',
       'btnRetry', 'btnChangeDiff', 'btnShare', 'btnResMenu', 'btnResume', 'btnRestart', 'btnPauseSettings', 'btnQuit',
       'setBody', 'ctaHeading', 'ctaBody', 'ctaBtn', 'pauseTitle', 'pauseHint',
     ].forEach(id => this.el[id] = $(id));
     this.el.ctaBtn.href = INSTAGRAM_URL;
     this.el.ctaBtn.target = '_blank';
     this.el.ctaBtn.rel = 'noopener noreferrer';
+    // window.open fallback so the link works 100% inside any webview/browser
+    this.el.ctaBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.open(INSTAGRAM_URL, '_blank', 'noopener,noreferrer');
+    });
     this._buildMenu();
     this._buildSettings();
     this._bind();
@@ -279,7 +284,8 @@ export class Screens {
   showResult(result, sim, score, grade, best, isNewBest) {
     this.show('result');
     const win = result.win;
-    this.el.resVerdict.textContent = win ? tr('victory') : (result.how === 'draw' ? tr('result_draw') : tr('defeat'));
+    this._lastResult = result;
+    this.el.resVerdict.textContent = win ? t(getLang(), 'resWin') : (result.how === 'draw' ? tr('result_draw') : t(getLang(), 'resLose'));
     this.el.resVerdict.className = win ? 'win' : 'lose';
     this.el.resGrade.textContent = grade;
     this.el.resGrade.dataset.g = grade;
@@ -295,6 +301,7 @@ export class Screens {
       [tr('st_chai'), st.chaiUlts],
       [tr('st_kos'), st.kos + ' / 3'],
       [tr('st_time'), Math.floor(st.time) + 's'],
+      [tr('st_timeleft'), Math.ceil(Math.max(0, sim.timeLeft)) + 's'],
       ['SCORE', score],
     ];
     const wrap = this.el.resStats;
@@ -336,14 +343,19 @@ export class Screens {
     const mh = document.querySelector('.modalCard h3'); if (mh) mh.textContent = t(L, 'settings');
     this.el.ctaHeading.textContent = t(L, 'ctaHeading');
     this.el.ctaBody.textContent = t(L, 'ctaBody');
-    this.el.ctaBtn.textContent = t(L, 'ctaButton');
+    this.el.ctaBtn.innerHTML = icon('instagram') + `<span>${t(L, 'ctaFollow')}</span>`;
+    this.el.ctaSub.textContent = t(L, 'ctaButton');
+    if (this._lastResult) {
+      const win = this._lastResult.win;
+      this.el.resVerdict.textContent = win ? t(L, 'resWin') : (this._lastResult.how === 'draw' ? tr('result_draw') : t(L, 'resLose'));
+    }
     this.el.pauseTitle.textContent = t(L, 'paused');
     this.el.pauseHint.textContent = t(L, 'pauseHint');
     this.el.btnResume.innerHTML = icon('play') + `<span>${t(L, 'resume')}</span>`;
     this.el.btnRestart.innerHTML = icon('back') + `<span>${t(L, 'restart')}</span>`;
     this.el.btnPauseSettings.innerHTML = icon('gear') + `<span>${t(L, 'settings')}</span>`;
     this.el.btnQuit.innerHTML = icon('close') + `<span>${t(L, 'quit')}</span>`;
-    this.el.btnRetry.innerHTML = icon('play') + `<span>${t(L, 'retry')}</span>`;
+    this.el.btnRetry.innerHTML = icon('play') + `<span>${t(L, 'playAgain')}</span>`;
     this.el.btnChangeDiff.innerHTML = icon('gauge') + `<span>${t(L, 'changeDiff')}</span>`;
     this.el.btnShare.innerHTML = icon('share') + `<span>${t(L, 'shareCard')}</span>`;
     this.el.btnResMenu.innerHTML = icon('back') + `<span>${t(L, 'quit')}</span>`;

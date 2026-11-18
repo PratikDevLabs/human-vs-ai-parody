@@ -42,28 +42,33 @@
 <!-- ===================== HUD ===================== -->
 <div id="hud" class="hidden">
   <div id="topbar">
-    <div id="scoreWrap"><span id="scoreNum">0</span></div>
     <div id="timer">3:00</div>
-    <div id="comboWrap" class="hidden"><span id="comboNum">0</span><span class="comboLbl" data-k="combo">COMBO</span></div>
+    <div id="comboWrap" class="hidden"><span id="comboNum">0</span><span class="comboLbl" id="comboLbl">COMBO</span></div>
     <div class="topBtns">
       <button id="btnSound" class="tbtn" aria-label="sound"></button>
       <button id="btnFull" class="tbtn" aria-label="fullscreen"></button>
       <button id="btnPause" class="tbtn" aria-label="pause"></button>
     </div>
   </div>
-  <div id="cards"></div>
+  <!-- Top-left player status card (angled glass) -->
   <div id="playerPanel">
+    <div class="pcHead"><span id="pcName">HUMAN (YOU)</span><span id="scoreNum">0</span></div>
     <div class="phpRow">
       <div id="pHpBar"><div id="pHpTrail"></div><div id="pHpFill"></div></div>
-      <div id="pHpNum">220</div>
+      <div id="pHpNum">220 / 220</div>
     </div>
     <div id="pStamBar"><div id="pStamFill"></div></div>
     <div id="chaiRow">
       <div id="chaiRing"><div id="chaiCore"></div></div>
       <div id="chaiBar"><div id="chaiFill"></div></div>
+      <span id="chaiPct">0%</span>
     </div>
   </div>
-  <button id="btnUlt" class="abtn ultBtn" data-act="ult" aria-label="chai ult"></button>
+  <!-- Top-right: enemy mini-cards beside utility buttons -->
+  <div id="topRight">
+    <div id="cards"></div>
+  </div>
+  <button id="btnUlt" class="ultBtn" data-act="ult" aria-label="chai ult"></button>
   <div id="banner" class="hidden"></div>
   <div id="feed"></div>
   <div id="floaters"></div>
@@ -76,6 +81,7 @@
 </div>
 
 <!-- touch controls layer (buttons injected by Controls) -->
+ (buttons injected by Controls) -->
 <div id="touchLayer" class="hidden"></div>
 
 <!-- ===================== SCREENS ===================== -->
@@ -131,6 +137,7 @@
       <h3 id="ctaHeading">AI se badla pura nahi hua?</h3>
       <p id="ctaBody"></p>
       <a id="ctaBtn" class="cta ig" href="https://www.instagram.com/pratik_roy_820?rpxt=MTIyNncxaDZ4bXhhbg==" target="_blank" rel="noopener noreferrer"></a>
+      <div id="ctaSub"></div>
     </div>
   </div>
 </section>

@@ -23,7 +23,7 @@ export class HUD {
       banner: $('banner'), feed: $('feed'), floaters: $('floaters'),
       telegraphs: $('telegraphs'), edgeArrows: $('edgeArrows'),
       hitDir: $('hitDir'), subtitles: $('subtitles'), subSpeaker: $('subSpeaker'), subText: $('subText'),
-      countBig: $('countBig'), lowHpFx: $('lowHpFx'),
+      countBig: $('countBig'), lowHpFx: $('lowHpFx'), comboLbl: $('comboLbl'), pcName: $('pcName'), chaiPct: $('chaiPct'),
       btnUlt: $('btnUlt'), btnPause: $('btnPause'), btnSound: $('btnSound'),
     };
     this.el.btnPause.innerHTML = icon('pause');
@@ -67,6 +67,7 @@ export class HUD {
   }
 
   buildCards(sim, lang) {
+    this.el.pcName.textContent = t(lang, 'playerCard');
     this.el.cards.innerHTML = '';
     this._cards = {};
     for (const f of sim.fighters) {
@@ -125,6 +126,7 @@ export class HUD {
     this.el.subSpeaker.textContent = e.speaker;
     this.el.subSpeaker.style.color = e.color || '#fff';
     this.el.subText.textContent = e.text;
+    this.el.subtitles.style.setProperty('--sc', e.color || '#fff');
     s.classList.remove('hidden');
     clearTimeout(this._subT);
     this._subT = setTimeout(() => s.classList.add('hidden'), Math.max(1800, e.text.length * 55));
@@ -160,7 +162,8 @@ export class HUD {
     // combo
     if (sim.combo >= 2) {
       this.el.comboWrap.classList.remove('hidden');
-      this.el.comboNum.textContent = sim.combo;
+      this.el.comboNum.textContent = 'x' + sim.combo;
+      this.el.comboLbl.textContent = t(this.langRef(), 'comboDesi');
     } else this.el.comboWrap.classList.add('hidden');
     // score live
     const score = Math.floor(sim.stats.dealt) + sim.stats.kos * 100 + sim.stats.perfect * 25;
@@ -180,6 +183,7 @@ export class HUD {
     this.el.chaiFill.style.width = (cp * 100) + '%';
     this.el.chaiRing.style.background = `conic-gradient(var(--chai) ${cp * 360}deg, rgba(255,194,74,0.12) 0deg)`;
     this.el.chaiRing.classList.toggle('ready', cp >= 1);
+    this.el.chaiPct.textContent = Math.floor(cp * 100) + '%';
     this.el.btnUlt.classList.toggle('ready', cp >= 1);
     $('ultLbl').textContent = t(lang, 'ult_name');
     // enemy cards
@@ -206,7 +210,7 @@ export class HUD {
       if (!casting) continue;
       const tp = this._telePool[ti++];
       const name = f.state === 'ult' ? t(lang, 'ult_' + f.id)
-        : f.state === 'cast' ? t(lang, 'cast_' + (f.cast ? f.cast.key : f.id))
+        : f.state === 'cast' ? t(lang, 'atk_' + (f.cast ? f.cast.key : 'punch'))
         : t(lang, 'atk_' + f.atk.type);
       const key = f.id + name;
       if (tp.key !== key) { tp.key = key; tp.name.textContent = name; }

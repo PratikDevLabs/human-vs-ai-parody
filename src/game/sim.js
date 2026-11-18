@@ -32,7 +32,7 @@ export const sim = {
   slabs: makePool(),        // essay slabs
   ult: null, ultLock: false,
   combo: 0, comboT: 0,
-  shake: 0,
+  shake: 0, shakeDirX: 1,
   stats: null,
   result: null,
   countdownT: 0,
@@ -135,6 +135,7 @@ export function startAttack(f, type) {
   f.face = f.isPlayer ? (nearestEnemy(f) ? Math.sign(nearestEnemy(f).x - f.x) || f.face : f.face) : (sim.player.alive ? Math.sign(sim.player.x - f.x) || f.face : f.face);
   if (f.isPlayer) sim.stats.swings++;
   bus.emit('sfx:whiff', f);
+  bus.emit('fx:swing', f);
   return true;
 }
 
@@ -196,7 +197,8 @@ function resolveHit(f) {
   }
   if (any) {
     sim.hitstopT = Math.max(sim.hitstopT, a.type === 'kick' ? COMBAT.hitstopHeavy : COMBAT.hitstopLight);
-    sim.shake = Math.max(sim.shake, a.type === 'kick' ? 0.35 : 0.18);
+    sim.shake = Math.max(sim.shake, Math.min(0.6, (a.type === 'kick' ? 0.35 : 0.18) + dmg * 0.012));
+    sim.shakeDirX = Math.sign(hits[0] ? (hits[0].x - f.x) : 1) || 1;
     bus.emit(a.type === 'kick' ? 'sfx:kickHit' : 'sfx:punchHit', { heavy: a.type === 'kick' });
     if (f.isPlayer) bus.emit('haptic', a.type === 'kick' ? 30 : 12);
   }
@@ -244,6 +246,7 @@ export function applyDamage(t, amt, src, opts) {
     sim.stats.taken += amt;
     t.chai = clamp(t.chai + amt * COMBAT.chaiGainTaken * 0.28, 0, 100);
     sim.shake = Math.max(sim.shake, opts.kind === 'punch' || opts.kind === 'kick' ? 0.22 : 0.4);
+    sim.shakeDirX = src ? Math.sign(t.x - src.x) || 1 : 1;
     bus.emit('sfx:hurt');
     bus.emit('ui:hurt', { amt, fromX: src ? src.x : undefined });
     bus.emit('haptic', 16);
@@ -292,7 +295,19 @@ function endMatch() {
   if (sim.state === 'result') return;
   sim.state = 'result';
   sim.stats.time = sim.time;
+  sim.slowmoT = 1.2;               // slow-motion KO zoom before the result mounts
+  if (sim.player.hp < 0) sim.player.hp = 0;
+  for (const f of sim.fighters) if (!f.isPlayer && !f.alive) f.hp = 0; // clamp dead AIs
   bus.emit('sim:result', sim.result);
+}
+// watchdog: called from the render loop — guarantees the result state is reached
+export function forceEnd() {
+  if (sim.state === 'fight' && !sim.result) {
+    if (!sim.player.alive || sim.player.hp <= 0) sim.result = { win: false, how: 'ko' };
+    else if (livingAIs().length === 0) sim.result = { win: true, how: 'allko' };
+    else if (sim.timeLeft <= 0) sim.result = { win: sim.player.hp / sim.player.maxHp >= 0.5, how: 'time' };
+    if (sim.result) endMatch();
+  }
 }
 
 function timeUp() {
@@ -408,7 +423,7 @@ export function stepSim(dt) {
     sim.countdownT -= dt;
     const now = Math.ceil(sim.countdownT);
     if (now !== prev && now > 0) bus.emit('ui:count', now);
-    if (sim.countdownT <= 0) { sim.state = 'fight'; bus.emit('ui:count', 'fight'); }
+    if (sim.countdownT <= 0) { sim.state = 'fight'; bus.emit('ui:count', 'fight'); bus.emit('voice:speak', { char: 'you', event: 'intro', priority: true }); }
     return;
   }
   if (sim.state !== 'fight' && sim.state !== 'result') return;
