@@ -36,7 +36,7 @@ const settings = storage.getSettings();
 let renderer, arena, rigs, fx, hud, controls, screens, tutorial;
 let running = false, paused = false;
 let acc = 0, lastT = 0, frameCount = 0, benchFps = [];
-let appState = 'BOOT'; // BOOT MENU VS COUNTDOWN FIGHT RESULT
+let appState = 'BOOT'; // BOOT MENU COUNTDOWN FIGHT RESULT (PLAY goes straight to countdown)
 let resultAt = 0, chaiReadyAnnounced = false;
 let wakeLock = null;
 let deferredPrompt = null;
@@ -69,7 +69,6 @@ async function boot() {
         menuRotTarget = -i * (Math.PI * 2 / 3);
       },
       onPreviewUlt: (id) => previewUlt(id),
-      onSkipVS: () => { clearTimeout(startMatch._t); if (appState === 'VS') { sim.state = 'countdown'; appState = 'COUNTDOWN'; controls.setEnabled(true); acquireWakeLock(); if (!tutorial.startIfNeeded()) screens.toast(tr('mission')); } },
     },
   });
   screens.setLoading(8);
@@ -206,28 +205,22 @@ function toMenu() {
 }
 
 function startMatch(diffKey) {
+  // PLAY -> straight into the 3-2-1-FIGHT countdown (no VS intro, no overlay)
   stopMusic();
   menuUltActive = false;
   resetMatch(diffKey);
   if (rigs) rigs.rigs.you.root.visible = true;
-  sim.state = 'vs';
-  appState = 'VS';
+  sim.state = 'countdown';
+  appState = 'COUNTDOWN';
   chaiReadyAnnounced = false;
-  screens.showVS(diffKey);
+  screens.hideAll(); // no menu/overlay screens active during the fight
   hud.buildCards(sim, getLang());
   hud.show();
   voice.interrupt();
-  // VS intro 2.5s, skippable
-  clearTimeout(startMatch._t);
-  startMatch._t = setTimeout(() => {
-    if (appState !== 'VS') return;
-    sim.state = 'countdown';
-    appState = 'COUNTDOWN';
-    controls.setEnabled(true);
-    acquireWakeLock();
-    const tut = tutorial.startIfNeeded();
-    if (!tut) screens.toast(tr('mission'));
-  }, 2500);
+  controls.setEnabled(true);
+  acquireWakeLock();
+  const tut = tutorial.startIfNeeded();
+  if (!tut) screens.toast(tr('mission'));
 }
 
 function onSimStateChange() {
@@ -285,7 +278,7 @@ async function shareResult() {
 
 // ---------------- pause / wake lock / fullscreen ----------------
 function togglePause(force) {
-  if (appState !== 'FIGHT' && appState !== 'COUNTDOWN' && appState !== 'VS') return;
+  if (appState !== 'FIGHT' && appState !== 'COUNTDOWN') return;
   paused = force === undefined ? !paused : force;
   if (paused) { screens.showPause(); stopMusic(); }
   else { screens.hidePause(); startMusic(); lastT = performance.now(); }
@@ -323,7 +316,6 @@ function bindGlobal() {
     if (appState === 'FIGHT' && !paused) press('ult');
   });
   $('loadEmblem').innerHTML = icon('emblemYou');
-  $('vsYouEmblem').innerHTML = icon('emblemYou');
   $('btnPause').onclick = () => togglePause();
   $('btnFull').onclick = () => toggleFullscreen();
   $('btnSound').onclick = () => {

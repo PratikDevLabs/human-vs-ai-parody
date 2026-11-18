@@ -411,7 +411,7 @@ export function stepSim(dt) {
     if (sim.countdownT <= 0) { sim.state = 'fight'; bus.emit('ui:count', 'fight'); }
     return;
   }
-  if (sim.state !== 'fight' && sim.state !== 'result' && sim.state !== 'vs') return;
+  if (sim.state !== 'fight' && sim.state !== 'result') return;
   if (sim.state === 'result') { stepAmbient(dt); return; }
 
   // hit-stop freezes the sim briefly

@@ -30,10 +30,10 @@ export class Screens {
     this.bus = bus; this.storage = storage; this.settings = settings; this.cbs = cbs;
     this.diffKey = 'medium';
     this.el = {};
-    ['screen-loading', 'screen-menu', 'screen-vs', 'screen-result', 'screen-pause', 'modal-settings',
+    ['screen-loading', 'screen-menu', 'screen-result', 'screen-pause', 'modal-settings',
       'menuTitle', 'menuTag', 'fighterCards', 'diffSeg', 'diffReadout', 'diffLbl', 'btnPlay',
       'btnSettings', 'btnHelp', 'btnInstall', 'statsRow', 'credit', 'loadBar', 'loadPct',
-      'vsYouName', 'vsEnemyWrap', 'vsSkip', 'resVerdict', 'resGrade', 'resStats', 'resBest', 'resNewBest',
+      'resVerdict', 'resGrade', 'resStats', 'resBest', 'resNewBest',
       'btnRetry', 'btnChangeDiff', 'btnShare', 'btnResMenu', 'btnResume', 'btnRestart', 'btnPauseSettings', 'btnQuit',
       'setBody', 'ctaHeading', 'ctaBody', 'ctaBtn', 'pauseTitle', 'pauseHint',
     ].forEach(id => this.el[id] = $(id));
@@ -249,8 +249,6 @@ export class Screens {
 
   // ---------- bindings ----------
   _bind() {
-    this.el.vsSkip.innerHTML = icon('play') + '<span>SKIP</span>';
-    this.el.vsSkip.onclick = () => this.cbs.onSkipVS();
     this.el['screen-pause'].addEventListener('click', (e) => { if (e.target === this.el['screen-pause']) this.cbs.onResume(); });
     this.el.btnRetry.onclick = () => this.cbs.onRetry();
     this.el.btnChangeDiff.onclick = () => { this.show('menu'); this.cbs.onQuitToMenu(); };
@@ -276,22 +274,7 @@ export class Screens {
     this.el.loadPct.textContent = Math.floor(pct) + '%';
   }
   showMenu() { this.show('menu'); this.refreshStats(); this.refreshLang(); }
-
-  showVS(diffKey) {
-    this.show('vs');
-    this.el.vsYouName.textContent = tr('name_you');
-    const wrap = this.el.vsEnemyWrap;
-    wrap.innerHTML = '';
-    for (const id of ['grok', 'chatgpt', 'claude']) {
-      const f = FIGHTERS[id];
-      const d = document.createElement('div');
-      d.className = 'vsCard';
-      d.style.setProperty('--c', f.color);
-      d.style.animationDelay = (0.15 + ['grok', 'chatgpt', 'claude'].indexOf(id) * 0.18) + 's';
-      d.innerHTML = `<div class="vsEmb">${icon('emblem' + id[0].toUpperCase() + id.slice(1))}</div><div class="vsName">${tr('name_' + id)}</div><div class="vsTitle">${f.title}</div>`;
-      wrap.appendChild(d);
-    }
-  }
+  hideAll() { for (const el of document.querySelectorAll('.screen')) el.classList.remove('active'); document.body.dataset.screen = 'fight'; }
 
   showResult(result, sim, score, grade, best, isNewBest) {
     this.show('result');

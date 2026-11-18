@@ -457,28 +457,6 @@ body.leftHanded .ultBtn { right: auto; left: 14px; }
 }
 @media (orientation: portrait) and (max-height: 700px) { #rotateHint { display: block; } }
 
-/* VS intro */
-#screen-vs { background: rgba(7, 6, 15, 0.55); backdrop-filter: blur(2px); }
-.vsInner { display: flex; flex-direction: column; align-items: center; gap: 12px; width: min(720px, 94vw); }
-.vsYou { text-align: center; animation: slideInL 0.5s ease-out; }
-.vsEmb { width: 90px; height: 90px; margin: 0 auto; color: var(--you); filter: drop-shadow(0 0 24px rgba(39, 230, 255, 0.8)); }
-.vsNameBig { font-family: var(--font-d); font-size: 72px; color: var(--you); line-height: 0.9; text-shadow: 0 0 30px rgba(39, 230, 255, 0.8); }
-.vsTitleBig { font-size: 14px; letter-spacing: 0.3em; color: var(--dim); }
-.vsVs { font-family: var(--font-d); font-size: 110px; font-weight: 700; color: var(--chai); text-shadow: 0 0 40px rgba(255, 194, 74, 0.9); animation: vsZoom 0.6s ease-out; }
-@keyframes vsZoom { 0% { transform: scale(3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-@keyframes slideInL { 0% { transform: translateX(-60px); opacity: 0; } 100% { transform: none; opacity: 1; } }
-#vsEnemyWrap { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
-.vsCard {
-  --c: #fff;
-  width: 150px; text-align: center; padding: 12px 8px;
-  background: var(--panel); border: 1px solid var(--line); border-bottom: 4px solid var(--c);
-  border-radius: 12px; opacity: 0; animation: slideInR 0.5s ease-out forwards;
-  backdrop-filter: blur(6px);
-}
-@keyframes slideInR { 0% { transform: translateX(60px); opacity: 0; } 100% { transform: none; opacity: 1; } }
-.vsCard .vsEmb { width: 54px; height: 54px; margin: 0 auto; color: var(--c); filter: drop-shadow(0 0 12px var(--c)); }
-.vsCard .vsName { font-family: var(--font-d); font-size: 26px; color: var(--c); }
-.vsCard .vsTitle { font-size: 10px; letter-spacing: 0.14em; color: var(--dim); min-height: 24px; }
 
 /* result */
 #screen-result { background: linear-gradient(180deg, rgba(7, 6, 15, 0.55), rgba(7, 6, 15, 0.92)); overflow-y: auto; }
