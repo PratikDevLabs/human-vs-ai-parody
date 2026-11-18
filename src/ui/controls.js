@@ -5,6 +5,7 @@
 // ============================================================
 import { icon } from './icons.js';
 import { tr } from '../core/i18n.js';
+import { bus } from '../core/bus.js';
 
 export class Controls {
   constructor(layerEl, onAction) {
@@ -34,7 +35,7 @@ export class Controls {
       kick: mk('kick', 'kick', 'KICK'),
       jump: mk('jump', 'jump', 'JUMP'),
       dodge: mk('dodge', 'dodge', 'DODGE'),
-      ult: mk('ult', 'chai', 'ULT'),
+      // CHAI ULT lives once in the HUD (#btnUlt) at the top of the right arc — no duplicate ring
     };
     // joystick visuals
     this.stickBase = document.createElement('div');
@@ -85,6 +86,7 @@ export class Controls {
       if (btn) {
         btn.classList.add('on');
         btn.setPointerCapture && e.pointerId !== undefined && btn.setPointerCapture(e.pointerId);
+        bus.emit('haptic', 25); // haptic feedback on every touchstart
         this.onAction(btn.dataset.act, 'down');
         return;
       }
@@ -155,7 +157,7 @@ export class Controls {
   }
 
   refreshLabels() {
-    const map = { punch: tr('kb_punch'), kick: tr('kb_kick'), jump: tr('kb_jump'), dodge: tr('kb_dodge'), ult: tr('kb_ult') };
+    const map = { punch: tr('kb_punch'), kick: tr('kb_kick'), jump: tr('kb_jump'), dodge: tr('kb_dodge') };
     for (const k in this.btns) {
       const lbl = this.btns[k].querySelector('.albl');
       if (lbl) lbl.textContent = map[k];

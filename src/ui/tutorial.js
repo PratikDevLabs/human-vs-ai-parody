@@ -12,7 +12,7 @@ const STEPS = [
   { key: 'tut_1', wait: 'move', target: '#stickBase', timeout: 6 },
   { key: 'tut_2', wait: 'punch', target: '#btn_punch', timeout: 6 },
   { key: 'tut_3', wait: 'dodge', target: '#btn_dodge', timeout: 8 },
-  { key: 'tut_4', wait: 'ult', target: '#btn_ult', timeout: 8 },
+  { key: 'tut_4', wait: 'ult', target: '#btnUlt', timeout: 8 },
   { key: 'tut_5', wait: null, target: null, timeout: 5 },
   { key: 'tut_6', wait: null, target: null, timeout: 5 },
 ];

@@ -14,15 +14,16 @@ import { FIGHTERS, COLORS } from '../config.js';
 import { voiceBusNode, audioCtx, reverbSend, duck } from './audio.js';
 
 const SPEAKERS = {
-  you:     { name: 'YOU', color: COLORS.you, pitch: 0.95, rate: 0.95 },
-  grok:    { name: 'GROK', color: COLORS.grok, pitch: 0.82, rate: 1.02 },  // raspy fast — via clip EQ
-  chatgpt: { name: 'CHATGPT', color: COLORS.chatgpt, pitch: 0.88, rate: 0.90 }, // calm deep
-  claude:  { name: 'CLAUDE', color: COLORS.claude, pitch: 0.80, rate: 0.88 },  // low soft
+  // authoritative desi male base: pitch 0.78, rate 0.95, volume 1.0 (spec §5)
+  you:     { name: 'YOU', color: COLORS.you, pitch: 0.78, rate: 0.95 },
+  grok:    { name: 'GROK', color: COLORS.grok, pitch: 0.78, rate: 0.95 },   // raspy fast — via clip EQ
+  chatgpt: { name: 'CHATGPT', color: COLORS.chatgpt, pitch: 0.78, rate: 0.95 }, // calm deep
+  claude:  { name: 'CLAUDE', color: COLORS.claude, pitch: 0.78, rate: 0.95 },  // low soft
 };
 const COOLDOWN = 1.1;
 // spec §7: prefer male-suggesting Indian/English names; penalise female-suggesting ones
-const MALE_HINTS = ['madhur', 'prabhat', 'ravi', 'hemant', 'rishi', 'male', 'david', 'daniel', 'alex', 'fred', 'arvind'];
-const FEMALE_HINTS = ['neerja', 'swara', 'heera', 'veena', 'kalpana', 'lekha', 'female', 'zira', 'susan', 'samantha', 'karen', 'moira', 'tessa', 'google हिन्दी'];
+const MALE_HINTS = ['madhur', 'prabhat', 'ravi', 'hemant', 'rishi', 'male', 'google हिन्दी', 'david', 'daniel', 'alex', 'fred', 'arvind'];
+const FEMALE_HINTS = ['neerja', 'swara', 'heera', 'veena', 'kalpana', 'lekha', 'female', 'zira', 'susan', 'samantha', 'karen', 'moira', 'tessa', 'aditi', 'priya', 'pooja', 'anjali', 'kavya'];
 
 export class VoiceDirector {
   constructor() {
@@ -63,9 +64,11 @@ export class VoiceDirector {
 
   pickVoice(char) {
     if (!this.voices.length) return null;
-    const wantLang = char === 'you' ? 'hi' : 'en'; // AIs speak English-ish lines with Indian accent
+    // STRICT male filter: if any non-female voice exists, drop all female-hinted ones (zero squeaky/female)
+    let pool = this.voices.filter(v => !FEMALE_HINTS.some(h => v.name.toLowerCase().includes(h)));
+    if (!pool.length) pool = this.voices;
     let best = null, bestScore = -1e9;
-    for (const v of this.voices) {
+    for (const v of pool) {
       const name = v.name.toLowerCase();
       let s = 0;
       const lang = v.lang.toLowerCase();
@@ -75,8 +78,8 @@ export class VoiceDirector {
       else if (lang.startsWith('en-gb') || lang.startsWith('en-us')) s += 45; // then en-GB/en-US (male preferred below)
       else if (lang.startsWith('en')) s += 30;
       else s -= 50;
-      if (FEMALE_HINTS.some(h => name.includes(h))) s -= 60;  // never the robotic female default
-      if (MALE_HINTS.some(h => name.includes(h))) s += 25;
+      if (FEMALE_HINTS.some(h => name.includes(h))) s -= 1000; // hard penalty
+      if (MALE_HINTS.some(h => name.includes(h))) s += 60;     // desi male profile: Google हिन्दी, Rishi, Hemant, Prabhat…
       if (v.localService) s += 5;
       if (s > bestScore) { bestScore = s; best = v; }
     }
@@ -152,9 +155,9 @@ export class VoiceDirector {
         const u = new SpeechSynthesisUtterance(line);
         const v = this.pickVoice(char);
         if (v) u.voice = v;
-        u.pitch = sp.pitch;         // 0.80–0.95, never < 0.7
-        u.rate = Math.min(sp.rate, 0.95); // 0.88–0.95
-        u.volume = 1;
+        u.pitch = 0.78;            // deep, heavy, masculine base (spec §5)
+        u.rate = 0.95;
+        u.volume = 1.0;
         this.current = { char, until: now + Math.min(4, line.length * 0.055) };
         speechSynthesis.speak(u);
       } catch (err) { /* silent fallback */ }

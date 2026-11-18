@@ -2,7 +2,7 @@
 // src/render/arena.js — "NEO-DELHI 2099" five-layer parallax arena:
 // sky(moon/stars/smog/lightning) → far skyline(towers+shikhara+minarets)
 // → mid city(windows, holo billboards, power lines) → near street
-// (chai tapri neon चाय sign, paan shop, auto-rickshaw, tube lights)
+// (chai tapri neon teacup-glyph sign, paan shop, auto-rickshaw, tube lights)
 // → foreground fog. Wet neon-grid floor + light pools.
 // ============================================================
 import * as THREE from 'three';
@@ -23,7 +23,7 @@ function rand(a, b) { return a + Math.random() * (b - a); }
 // ---------- floor: wet asphalt + neon grid + puddles ----------
 function floorTexture() {
   return makeCanvas(1024, 1024, (g, w, h) => {
-    g.fillStyle = '#0a0817'; g.fillRect(0, 0, w, h);
+    g.fillStyle = '#07090e'; g.fillRect(0, 0, w, h);
     // asphalt noise
     for (let i = 0; i < 9000; i++) {
       const v = 8 + Math.random() * 18;
@@ -44,68 +44,96 @@ function floorTexture() {
 function floorGlowTexture() {
   return makeCanvas(1024, 1024, (g, w, h) => {
     g.clearRect(0, 0, w, h);
-    // neon grid — perspective-ish horizontal lines denser at bottom
-    for (let i = 0; i < 14; i++) {
-      const t = i / 13, y = Math.pow(t, 1.7) * h;
-      g.strokeStyle = `rgba(39,230,255,${0.10 + t * 0.30})`;
-      g.lineWidth = 1 + t * 2.4;
+    // crisp subtle cyan/magenta neon lane lines on wet asphalt
+    for (let i = 0; i < 10; i++) {
+      const t = i / 9, y = Math.pow(t, 1.8) * h;
+      g.strokeStyle = `rgba(39,230,255,${0.07 + t * 0.16})`;
+      g.lineWidth = 1 + t * 1.6;
       g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke();
     }
-    for (let i = -12; i <= 12; i++) {
-      g.strokeStyle = 'rgba(39,230,255,0.16)';
-      g.lineWidth = 1.4;
-      g.beginPath(); g.moveTo(w / 2 + i * 34, 0); g.lineTo(w / 2 + i * 110, h); g.stroke();
+    for (let i = -10; i <= 10; i++) {
+      g.strokeStyle = 'rgba(39,230,255,0.10)';
+      g.lineWidth = 1.2;
+      g.beginPath(); g.moveTo(w / 2 + i * 40, 0); g.lineTo(w / 2 + i * 120, h); g.stroke();
     }
-    // magenta accents
-    g.strokeStyle = 'rgba(255,59,240,0.10)';
-    g.lineWidth = 3;
-    g.beginPath(); g.moveTo(0, h * 0.12); g.lineTo(w, h * 0.12); g.stroke();
+    // magenta lane edge lines
+    g.strokeStyle = 'rgba(255,59,240,0.22)';
+    g.lineWidth = 2.4;
+    g.beginPath(); g.moveTo(0, h * 0.10); g.lineTo(w, h * 0.10); g.stroke();
+    g.beginPath(); g.moveTo(0, h * 0.86); g.lineTo(w, h * 0.86); g.stroke();
   });
 }
 
-// ---------- holo billboard ad textures (generic parody ads) ----------
-const ADS = [
-  ['चाय  ₹20', 'Cutting chai, full kadak', COLORS.chai],
-  ['AI KHATAM?', 'Karne ka mann hai?', '#FF3B4A'],
-  ['CHAI-OS 2099', 'Ab har cheez mein chai', '#27E6FF'],
-  ['GPT se tez!', 'Human mode: ON', '#2CFFA7'],
-  ['पान  cornershop', ' mitha meetha... danger', '#FF8A2B'],
-];
-function adTexture(title, sub, color) {
+// ---------- holo billboards: ABSTRACT neon shapes only — zero readable text in the 3D world ----------
+const AD_COLORS = [COLORS.chai, '#FF3B4A', '#27E6FF', '#2CFFA7', '#FF8A2B'];
+function adTexture(color, seed) {
   return makeCanvas(256, 128, (g, w, h) => {
     g.fillStyle = 'rgba(8,10,26,0.92)'; g.fillRect(0, 0, w, h);
     g.strokeStyle = color; g.lineWidth = 3; g.strokeRect(3, 3, w - 6, h - 6);
     g.shadowColor = color; g.shadowBlur = 18;
-    g.fillStyle = color;
-    g.font = '700 34px Rajdhani, "Noto Sans Devanagari", sans-serif';
-    g.textAlign = 'center';
-    g.fillText(title, w / 2, 58);
-    g.shadowBlur = 8;
-    g.font = '600 19px Rajdhani, sans-serif';
-    g.fillStyle = '#cdd6ff';
-    g.fillText(sub, w / 2, 92);
+    g.strokeStyle = color; g.lineWidth = 5; g.lineCap = 'round';
+    const r = (a, b) => a + ((seed * 9301 + 49297) % 233280 % (b - a)) / 1 + (b - a) * 0; // deterministic-ish
+    const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    if (seed % 3 === 0) {
+      // abstract bars
+      for (let i = 0; i < 4; i++) {
+        const bw = 24 + rnd() * 90;
+        g.globalAlpha = 0.5 + rnd() * 0.5;
+        g.fillStyle = color;
+        g.fillRect(28 + i * 56, 30 + rnd() * 40, bw * 0.4, 10 + rnd() * 26);
+      }
+    } else if (seed % 3 === 1) {
+      // abstract ring + slash
+      g.beginPath(); g.arc(w / 2, h / 2, 26 + rnd() * 14, 0, Math.PI * 2); g.stroke();
+      g.beginPath(); g.moveTo(w / 2 - 34, h / 2 + 26); g.lineTo(w / 2 + 34, h / 2 - 26); g.stroke();
+    } else {
+      // abstract chevrons
+      for (let i = 0; i < 3; i++) {
+        g.globalAlpha = 0.6 - i * 0.15;
+        g.beginPath();
+        g.moveTo(w / 2 - 40 + i * 14, h / 2 + 24);
+        g.lineTo(w / 2 + i * 14, h / 2 - 8);
+        g.lineTo(w / 2 + 40 + i * 14, h / 2 + 24);
+        g.stroke();
+      }
+    }
+    g.globalAlpha = 1;
   });
 }
-function neonSignTexture(text, color) {
+// neon shop sign: drawn teacup glyph (vector path, NO characters)
+function teacupSignTexture(color) {
   return makeCanvas(160, 160, (g, w, h) => {
-    g.fillStyle = 'rgba(5,4,12,0.9)'; g.fillRect(0, 0, w, h);
-    g.strokeStyle = color; g.lineWidth = 4; g.strokeRect(4, 4, w - 8, h - 8);
+    g.fillStyle = 'rgba(5,4,12,0.92)'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = color; g.lineWidth = 5; g.strokeRect(4, 4, w - 8, h - 8);
     g.shadowColor = color; g.shadowBlur = 26;
-    g.fillStyle = color;
-    g.font = '800 84px "Noto Sans Devanagari", Rajdhani, sans-serif';
-    g.textAlign = 'center'; g.textBaseline = 'middle';
-    g.fillText(text, w / 2, h / 2 + 4);
+    g.strokeStyle = color; g.lineWidth = 9; g.lineCap = 'round'; g.lineJoin = 'round';
+    g.beginPath(); g.moveTo(46, 66); g.lineTo(104, 66); g.lineTo(96, 116); g.lineTo(54, 116); g.closePath(); g.stroke();
+    g.beginPath(); g.arc(114, 84, 14, -1.2, 1.2); g.stroke();
+    g.lineWidth = 6;
+    g.beginPath(); g.moveTo(64, 48); g.quadraticCurveTo(58, 36, 66, 24); g.moveTo(86, 48); g.quadraticCurveTo(80, 36, 88, 24); g.stroke();
+  });
+}
+// paan shop sign: abstract leaf-diamond glyph (no text)
+function paanSignTexture(color) {
+  return makeCanvas(160, 160, (g, w, h) => {
+    g.fillStyle = 'rgba(5,4,12,0.92)'; g.fillRect(0, 0, w, h);
+    g.strokeStyle = color; g.lineWidth = 5; g.strokeRect(4, 4, w - 8, h - 8);
+    g.shadowColor = color; g.shadowBlur = 26;
+    g.strokeStyle = color; g.lineWidth = 8; g.lineJoin = 'round';
+    g.beginPath(); g.moveTo(80, 30); g.lineTo(116, 80); g.lineTo(80, 130); g.lineTo(44, 80); g.closePath(); g.stroke();
+    g.beginPath(); g.moveTo(80, 30); g.lineTo(80, 130); g.stroke();
   });
 }
 function windowTexture() {
+  // sparse, dim cool slit-windows on near-black facades — no rainbow pixels
   return makeCanvas(128, 256, (g, w, h) => {
-    g.fillStyle = '#0b0a1c'; g.fillRect(0, 0, w, h);
-    for (let y = 8; y < h - 8; y += 18) {
-      for (let x = 8; x < w - 8; x += 16) {
-        if (Math.random() < 0.42) {
-          const c = ['#27E6FF', '#FFC24A', '#FF8A2B', '#2CFFA7', '#FF3B4A', '#cdd6ff'][(Math.random() * 6) | 0];
-          g.fillStyle = c; g.globalAlpha = 0.5 + Math.random() * 0.5;
-          g.fillRect(x, y, 9, 11);
+    g.fillStyle = '#07070f'; g.fillRect(0, 0, w, h);
+    for (let y = 8; y < h - 8; y += 22) {
+      for (let x = 8; x < w - 8; x += 20) {
+        if (Math.random() < 0.16) {
+          g.fillStyle = Math.random() < 0.7 ? '#3d5a80' : '#27E6FF';
+          g.globalAlpha = 0.25 + Math.random() * 0.35;
+          g.fillRect(x, y, 7, 13);
         }
       }
     }
@@ -163,6 +191,25 @@ export function buildArena(scene) {
     }));
     sky.add(stars);
   }
+  // volumetric spotlight beams from the upper sky (additive cones)
+  const spotTex = makeCanvas(64, 256, (g, w, h) => {
+    const gr = g.createLinearGradient(0, 0, 0, h);
+    gr.addColorStop(0, 'rgba(150,180,255,0.30)');
+    gr.addColorStop(1, 'rgba(150,180,255,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+    const side = g.createLinearGradient(0, 0, w, 0);
+    side.addColorStop(0, 'rgba(0,0,0,1)'); side.addColorStop(0.5, 'rgba(0,0,0,0)'); side.addColorStop(1, 'rgba(0,0,0,1)');
+    g.globalCompositeOperation = 'destination-out'; g.fillStyle = side; g.fillRect(0, 0, w, h);
+  });
+  const spots = [];
+  for (let i = 0; i < 4; i++) {
+    const c = new THREE.Mesh(new THREE.ConeGeometry(rand(1.6, 3.2), rand(16, 22), 12, 1, true),
+      new THREE.MeshBasicMaterial({ map: spotTex, transparent: true, opacity: 0.35, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false }));
+    c.position.set(-28 + i * 17 + rand(-4, 4), 12, rand(-3, 1));
+    c.rotation.z = rand(0.12, 0.3);
+    sky.add(c); spots.push(c);
+  }
+  sky.userData.spots = spots;
   // smog planes
   const smogTex = makeCanvas(256, 128, (g, w, h) => {
     const gr = g.createLinearGradient(0, 0, 0, h);
@@ -236,8 +283,8 @@ export function buildArena(scene) {
     const winTex = windowTexture();
     winTex.wrapS = winTex.wrapT = THREE.RepeatWrapping;
     const mat = new THREE.MeshStandardMaterial({
-      color: 0x141130, roughness: 0.85, metalness: 0.2,
-      emissive: 0xffffff, emissiveMap: winTex, emissiveIntensity: 0.55,
+      color: 0x0a0a16, roughness: 0.92, metalness: 0.15,
+      emissive: 0xffffff, emissiveMap: winTex, emissiveIntensity: 0.5,
     });
     let x = -42;
     while (x < 42) {
@@ -250,8 +297,8 @@ export function buildArena(scene) {
     // holo billboards
     const boards = [];
     for (let i = 0; i < 5; i++) {
-      const [title, sub, color] = ADS[i % ADS.length];
-      const tex = adTexture(title, sub, color);
+      const color = AD_COLORS[i % AD_COLORS.length];
+      const tex = adTexture(color, 7 + i * 13);
       const m = new THREE.Mesh(
         new THREE.PlaneGeometry(4.6, 2.3),
         new THREE.MeshBasicMaterial({ map: tex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide })
@@ -313,8 +360,8 @@ export function buildArena(scene) {
     const awn = new THREE.Mesh(new THREE.BoxGeometry(3.0, 0.08, 1.2),
       new THREE.MeshStandardMaterial({ map: awnTex, roughness: 0.8 }));
     awn.position.set(0, 2.75, 0.5); awn.rotation.x = -0.35; tapri.add(awn);
-    // neon चाय sign
-    const signTex = neonSignTexture('चाय', COLORS.chai);
+    // neon teacup-glyph sign (drawn path, no characters)
+    const signTex = teacupSignTexture(COLORS.chai);
     const sign = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.5),
       new THREE.MeshBasicMaterial({ map: signTex, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
     sign.position.set(0, 3.6, 0.85); tapri.add(sign);
@@ -323,7 +370,7 @@ export function buildArena(scene) {
     const paan = new THREE.Mesh(new THREE.BoxGeometry(2.0, 2.4, 1.4), darkMat);
     paan.position.set(-8.6, 1.2, 0.4); near.add(paan);
     const paanSign = new THREE.Mesh(new THREE.PlaneGeometry(1.3, 1.3),
-      new THREE.MeshBasicMaterial({ map: neonSignTexture('पान', '#FF3B4A'), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
+      new THREE.MeshBasicMaterial({ map: paanSignTexture('#FF3B4A'), transparent: true, blending: THREE.AdditiveBlending, depthWrite: false }));
     paanSign.position.set(-8.6, 3.2, 1.15); near.add(paanSign);
     // auto-rickshaw silhouette
     const auto = new THREE.Group(); auto.position.set(5.8, 0, 0.6); near.add(auto);
@@ -382,8 +429,8 @@ export function buildArena(scene) {
   const floor = new THREE.Mesh(
     new THREE.PlaneGeometry(60, 46),
     new THREE.MeshStandardMaterial({
-      color: 0x0b0a1a, map: floorTexture(), roughness: 0.32, metalness: 0.85,
-      emissive: 0xffffff, emissiveMap: floorGlowTexture(), emissiveIntensity: 0.5,
+      color: 0x07090e, map: floorTexture(), roughness: 0.28, metalness: 0.88,
+      emissive: 0xffffff, emissiveMap: floorGlowTexture(), emissiveIntensity: 0.42,
     })
   );
   floor.rotation.x = -Math.PI / 2;
@@ -408,6 +455,11 @@ export function buildArena(scene) {
     mid.position.x = -camX * 0.30;
     near.position.x = -camX * 0.55;
     fore.position.x = -camX * 0.85;
+    // spotlights sway slowly
+    if (sky.userData.spots) for (let i = 0; i < sky.userData.spots.length; i++) {
+      sky.userData.spots[i].rotation.z = 0.2 + Math.sin(t * 0.18 + i * 2.1) * 0.07;
+      sky.userData.spots[i].material.opacity = 0.28 + Math.sin(t * 0.31 + i) * 0.09;
+    }
     // smog drift
     for (let i = 0; i < smogs.length; i++) {
       smogs[i].position.x += dt * (0.3 + i * 0.12);

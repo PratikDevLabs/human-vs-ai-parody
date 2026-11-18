@@ -13,6 +13,13 @@ export const COLORS = {
   chatgpt:  '#2CFFA7',   // emerald
   claude:   '#FF8A2B',   // ember orange
   chai:     '#FFC24A',   // chai gold
+  skin:     '#C98D64',   // human skin tone
+  brass:    '#B08D57',   // gauntlet brass
+  crimson:  '#A3122E',   // bandana / grok trim
+  obsidian: '#111115',   // grok armor
+  titanium: '#CFD6DD',   // chatgpt armor
+  terracotta: '#D97757', // claude accent
+  gold:     '#F59E0B',   // claude visor gold
   txt:      '#EEF1FF',
   dim:      '#9AA3C7',
 };
@@ -61,7 +68,7 @@ export const COMBAT = {
   perfectSlowmo: 0.30, perfectSlowmoScale: 0.35,
   comboWindow: 2.2, comboDmgScale: 0.06, comboDmgCap: 0.5, // +6% per combo hit, max +50%
   meleeGrace: 0.40,          // anti-stunlock window after being melee-hit
-  hitstopLight: 0.07, hitstopHeavy: 0.14,
+  hitstopLight: 0.07, hitstopHeavy: 0.045, // 45ms freeze on heavy impacts (spec §4)
   pushbox: 0.05,
   matchTime: 180,            // 3:00
   lowHpPct: 0.25,

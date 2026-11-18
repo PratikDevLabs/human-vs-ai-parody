@@ -19,8 +19,8 @@ const FXShader = {
     time: { value: 0 },
     ca: { value: 0 },          // chromatic aberration amount
     distortion: { value: 0 },  // heat distortion amount
-    vignette: { value: 0.55 },
-    grain: { value: 0.05 },
+    vignette: { value: 0.42 },
+    grain: { value: 0.02 },
     flash: { value: 0 },
     tint: { value: new THREE.Color(0x000000) },
     tintAmt: { value: 0 },
@@ -73,7 +73,7 @@ export class Renderer3D {
 
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x07060F);
-    this.scene.fog = new THREE.FogExp2(0x0a0718, 0.028);
+    this.scene.fog = new THREE.FogExp2(0x0a0718, 0.016);
 
     this.camera = new THREE.PerspectiveCamera(38, 1, 0.1, 120);
     this.camX = 0; this.shakeAmt = 0;
@@ -114,7 +114,7 @@ export class Renderer3D {
     this.bloom.strength = def.bloomStrength;
     this.renderer.shadowMap.enabled = def.shadows;
     if (this.sun) this.sun.castShadow = def.shadows;
-    this.fxPass.uniforms.grain.value = def.grain ? 0.05 : 0.0;
+    this.fxPass.uniforms.grain.value = def.grain ? 0.02 : 0.0;
     this.resize();
   }
 
@@ -139,13 +139,15 @@ export class Renderer3D {
     if (u && (u.phase === 'lift' || u.phase === 'sip' || u.phase === 'charge')) { push = 2.0; lookUp = 0.8; }
     else if (u && u.key === 'claude' && (u.phase === 'ascend' || u.phase === 'compile')) { push = 1.4; lookUp = 0.6; }
     else if (u && u.phase === 'blast') { push = 0.6; }
+    if (sim.result) { push = Math.max(push, 1.6); } // 1.2s slow-mo KO zoom before result mounts
     this.camX += (targetX - this.camX) * Math.min(1, dt * 3);
     this._push = (this._push || 0) + (push - (this._push || 0)) * Math.min(1, dt * 2.5);
     this._lookUp = (this._lookUp || 0) + (lookUp - (this._lookUp || 0)) * Math.min(1, dt * 2.5);
     const cx = this.camX, cz = this.basePos.z + (targetZ - ARENA.camBaseZ) - this._push;
     this.shakeAmt = Math.max(0, this.shakeAmt - dt * 2.2);
     const s = this.shakeAmt * 0.12 + (sim.shake || 0) * 0.10;
-    const shx = s > 0 ? (Math.random() - 0.5) * s : 0;
+    const dirX = (sim.shakeDirX || 1);
+    const shx = s > 0 ? dirX * s * (0.6 + Math.random() * 0.4) : 0;   // directional: hit pushes camera away
     const shy = s > 0 ? (Math.random() - 0.5) * s * 0.7 : 0;
     this.camera.position.set(cx + shx, ARENA.camY + shy + this._lookUp * 0.4, cz);
     this.look.set(cx * 0.85, ARENA.lookY + this._lookUp, 0);
